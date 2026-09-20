@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Invoices — {{ app_name }}{% endblock %}
+{% block content %}
+<div class="header-row">
+  <h1>Invoices</h1>
+  <a href="/invoices/new" class="btn btn-primary">New invoice</a>
+</div>
+
+<div class="card">
+  {% if rows %}
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Number</th>
+        <th>Client</th>
+        <th>Issued</th>
+        <th>Status</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        <td><a href="/invoices/{{ row.invoice.id }}">{{ row.invoice.number }}</a></td>
+        <td>{{ clients[row.invoice.client_id].name if row.invoice.client_id in clients else "—" }}</td>
+        <td>{{ row.invoice.issue_date }}</td>
+        <td><span class="pill pill-{{ row.invoice.status }}">{{ row.invoice.status }}</span></td>
+        <td>{{ row.totals.total|money(row.invoice.currency) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="muted">No invoices yet. <a href="/invoices/new">Create your first invoice</a>.</p>
+  {% endif %}
+</div>
+{% endblock %}

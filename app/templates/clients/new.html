@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}New client — {{ app_name }}{% endblock %}
+{% block content %}
+<h1 class="page-title">New client</h1>
+<div class="card">
+  {% set action = "/clients" %}
+  {% set client = None %}
+  {% set submit_label = "Create client" %}
+  {% include "clients/_form.html" %}
+</div>
+{% endblock %}

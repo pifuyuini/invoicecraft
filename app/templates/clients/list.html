@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Clients — {{ app_name }}{% endblock %}
+{% block content %}
+<div class="header-row">
+  <h1>Clients</h1>
+  <a href="/clients/new" class="btn btn-primary">New client</a>
+</div>
+
+<div class="card">
+  {% if rows %}
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Company</th>
+        <th>Email</th>
+        <th>Invoices</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        <td>{{ row.client.name }}</td>
+        <td>{{ row.client.company or "—" }}</td>
+        <td>{{ row.client.email or "—" }}</td>
+        <td>{{ row.invoice_count }}</td>
+        <td><a href="/clients/{{ row.client.id }}/edit" class="btn btn-ghost btn-sm">Edit</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="muted">No clients yet. <a href="/clients/new">Add your first client</a>.</p>
+  {% endif %}
+</div>
+{% endblock %}

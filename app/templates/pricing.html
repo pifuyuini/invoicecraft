@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Pricing — {{ app_name }}{% endblock %}
+{% block content %}
+<h1 class="page-title">Pricing</h1>
+{% if request.query_params.get("limit") == "1" %}
+<p class="alert-info">You've used all 5 free invoices. Upgrade to Pro for unlimited invoicing.</p>
+{% endif %}
+{% if request.query_params.get("unavailable") == "1" %}
+<p class="alert-info">Payments are not configured yet. Please check back soon.</p>
+{% endif %}
+<div class="pricing-grid">
+  <div class="card price-card">
+    <h2>Free</h2>
+    <p class="price">$0</p>
+    <ul>
+      <li>Up to 5 invoices</li>
+      <li>PDF download</li>
+      <li>Public share links</li>
+      <li>Client management</li>
+    </ul>
+    {% if not user %}
+    <a href="/signup" class="btn btn-ghost btn-block">Get started</a>
+    {% endif %}
+  </div>
+  <div class="card price-card highlighted">
+    <h2>Pro</h2>
+    <p class="price">$6<span class="per">/month</span></p>
+    <ul>
+      <li>Unlimited invoices</li>
+      <li>Everything in Free</li>
+      <li>No watermark on PDFs</li>
+      <li>Priority support</li>
+    </ul>
+    {% if not user %}
+    <a href="/signup" class="btn btn-primary btn-block">Get started</a>
+    {% elif user.is_pro %}
+    <p class="badge">You're on Pro</p>
+    <form method="post" action="/billing/portal">
+      <button type="submit" class="btn btn-ghost btn-block">Manage subscription</button>
+    </form>
+    {% else %}
+    <form method="post" action="/billing/checkout">
+      <button type="submit" class="btn btn-primary btn-block" {% if not stripe_configured %}disabled{% endif %}>Upgrade to Pro</button>
+    </form>
+    {% if not stripe_configured %}<p class="muted">Payments launching soon.</p>{% endif %}
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

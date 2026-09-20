@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}{{ invoice.number }} — {{ app_name }}{% endblock %}
+{% block content %}
+<div class="header-row">
+  <h1>Invoice {{ invoice.number }} <span class="pill pill-{{ invoice.status }}">{{ invoice.status }}</span></h1>
+</div>
+
+<div class="card">
+  <div class="form-row">
+    <div>
+      <h3>From</h3>
+      <p>
+        <strong>{{ owner.name or owner.email }}</strong><br>
+        {% if owner.name %}{{ owner.email }}{% endif %}
+      </p>
+    </div>
+    <div>
+      <h3>Bill to</h3>
+      {% if client %}
+      <p>
+        <strong>{{ client.name }}</strong><br>
+        {% if client.company %}{{ client.company }}<br>{% endif %}
+        {% if client.email %}{{ client.email }}<br>{% endif %}
+        {% if client.address %}{{ client.address }}{% endif %}
+      </p>
+      {% else %}
+      <p class="muted">—</p>
+      {% endif %}
+    </div>
+  </div>
+  <p>
+    Issued: {{ invoice.issue_date }}
+    {% if invoice.due_date %} · Due: {{ invoice.due_date }}{% endif %}
+  </p>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Description</th>
+        <th>Quantity</th>
+        <th>Unit price</th>
+        <th>Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td>{{ item.description }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.unit_price|money(invoice.currency) }}</td>
+        <td>{{ (item.quantity * item.unit_price)|money(invoice.currency) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <table class="table">
+    <tbody>
+      <tr>
+        <td class="muted">Subtotal</td>
+        <td>{{ totals.subtotal|money(invoice.currency) }}</td>
+      </tr>
+      <tr>
+        <td class="muted">Tax ({{ invoice.tax_rate }}%)</td>
+        <td>{{ totals.tax|money(invoice.currency) }}</td>
+      </tr>
+      <tr>
+        <td><strong>Total</strong></td>
+        <td><strong>{{ totals.total|money(invoice.currency) }}</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  {% if invoice.notes %}
+  <h3>Notes</h3>
+  <p>{{ invoice.notes }}</p>
+  {% endif %}
+</div>
+{% endblock %}

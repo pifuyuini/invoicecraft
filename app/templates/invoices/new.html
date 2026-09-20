@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}New invoice — {{ app_name }}{% endblock %}
+{% block content %}
+<h1 class="page-title">New invoice</h1>
+<div class="card">
+  {% set action = "/invoices" %}
+  {% set invoice = None %}
+  {% set items = None %}
+  {% set submit_label = "Create invoice" %}
+  {% set cancel_url = "/invoices" %}
+  {% include "invoices/_form.html" %}
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% if error %}<p class="alert-error">{{ error }}</p>{% endif %}
+<form method="post" action="{{ action }}">
+  <div class="form-row">
+    <label>Name *
+      <input type="text" name="name" required value="{{ client.name if client else '' }}">
+    </label>
+    <label>Company
+      <input type="text" name="company" value="{{ client.company if client else '' }}">
+    </label>
+  </div>
+  <div class="form-row">
+    <label>Email
+      <input type="email" name="email" value="{{ client.email if client else '' }}">
+    </label>
+    <label>Address
+      <input type="text" name="address" value="{{ client.address if client else '' }}">
+    </label>
+  </div>
+  <label>Notes
+    <textarea name="notes">{{ client.notes if client else '' }}</textarea>
+  </label>
+  <div class="actions">
+    <button type="submit" class="btn btn-primary">{{ submit_label }}</button>
+    <a href="/clients" class="btn btn-ghost">Cancel</a>
+  </div>
+</form>

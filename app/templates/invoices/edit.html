@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Edit {{ invoice.number }} — {{ app_name }}{% endblock %}
+{% block content %}
+<h1 class="page-title">Edit {{ invoice.number }}</h1>
+<div class="card">
+  {% set action = "/invoices/" ~ invoice.id ~ "/edit" %}
+  {% set submit_label = "Save changes" %}
+  {% set cancel_url = "/invoices/" ~ invoice.id %}
+  {% include "invoices/_form.html" %}
+</div>
+{% endblock %}

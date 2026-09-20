@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Welcome to Pro — {{ app_name }}{% endblock %}
+{% block content %}
+<div class="card">
+  <h1 class="page-title">You're on Pro now</h1>
+  <p>Thanks for upgrading! Your Pro subscription is active — enjoy unlimited invoices, watermark-free PDFs, and priority support.</p>
+  <p>
+    <a href="/dashboard" class="btn btn-primary">Go to your dashboard</a>
+    <a href="/pricing" class="btn btn-ghost">Manage your plan</a>
+  </p>
+</div>
+{% endblock %}

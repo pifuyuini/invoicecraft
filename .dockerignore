@@ -1,0 +1,12 @@
+.venv/
+.git/
+.gitignore
+data/
+tests/
+*.md
+!README.md
+__pycache__/
+*.pyc
+.env
+tmp/
+Cargo.toml

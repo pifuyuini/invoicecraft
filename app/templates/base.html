@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ app_name }}{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="topnav">
+  <div class="container nav-inner">
+    <a class="brand" href="/">{{ app_name }}</a>
+    <nav class="nav-links">
+      {% if user %}
+      <a href="/dashboard">Dashboard</a>
+      <a href="/invoices">Invoices</a>
+      <a href="/clients">Clients</a>
+      <a href="/pricing">Pricing{% if not user.is_pro %} · <span class="badge">Upgrade</span>{% endif %}</a>
+      <form method="post" action="/logout" class="inline-form">
+        <button type="submit" class="link-btn">Log out</button>
+      </form>
+      {% else %}
+      <a href="/pricing">Pricing</a>
+      <a href="/login">Log in</a>
+      <a href="/signup" class="btn btn-primary btn-sm">Get started</a>
+      {% endif %}
+    </nav>
+  </div>
+</header>
+<main class="container main">
+  {% block content %}{% endblock %}
+</main>
+<footer class="footer">
+  <div class="container">
+    <p>{{ app_name }} — professional invoices in minutes.</p>
+  </div>
+</footer>
+</body>
+</html>

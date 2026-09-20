@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}{{ app_name }} — Invoices that get you paid{% endblock %}
+{% block content %}
+<section class="hero">
+  <h1>Professional invoices in minutes.</h1>
+  <p class="lead">Create, send, and track beautiful invoices. Download print-ready PDFs and share a public link with your clients — no spreadsheets, no fuss.</p>
+  <div class="hero-cta">
+    <a href="/signup" class="btn btn-primary btn-lg">Start free</a>
+    <a href="/pricing" class="btn btn-ghost btn-lg">See pricing</a>
+  </div>
+  <p class="muted">Free plan includes {{ 5 }} invoices. No credit card required.</p>
+</section>
+<section class="features">
+  <div class="feature">
+    <h3>PDF in one click</h3>
+    <p>Generate clean, professional PDF invoices your clients can pay against immediately.</p>
+  </div>
+  <div class="feature">
+    <h3>Shareable links</h3>
+    <p>Every invoice gets a private public link — send it by email or chat, no attachments needed.</p>
+  </div>
+  <div class="feature">
+    <h3>Track status</h3>
+    <p>Draft, sent, paid. See what's outstanding at a glance from your dashboard.</p>
+  </div>
+  <div class="feature">
+    <h3>Multi-currency</h3>
+    <p>Bill clients in USD, EUR, GBP, CNY, or JPY with automatic tax calculation.</p>
+  </div>
+</section>
+{% endblock %}

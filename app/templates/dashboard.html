@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — {{ app_name }}{% endblock %}
+{% block content %}
+<div class="header-row">
+  <h1>Dashboard</h1>
+  <a href="/invoices/new" class="btn btn-primary">New invoice</a>
+</div>
+
+{% if not user.is_pro %}
+<p class="alert-info">{{ invoice_count }} of {{ free_limit }} free invoices used. <a href="/pricing">Upgrade to Pro</a> for unlimited invoices.</p>
+{% endif %}
+
+<div class="stats">
+  <div class="stat">
+    <div class="value">{{ invoice_count }}</div>
+    <div class="label">Invoices</div>
+  </div>
+  <div class="stat">
+    <div class="value">{{ outstanding|money("USD") }}</div>
+    <div class="label">Outstanding</div>
+  </div>
+  <div class="stat">
+    <div class="value">{{ paid_total|money("USD") }}</div>
+    <div class="label">Paid</div>
+  </div>
+  <div class="stat">
+    <div class="value">{{ draft_count }}</div>
+    <div class="label">Drafts</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="header-row">
+    <h2>Recent invoices</h2>
+    <a href="/invoices">View all</a>
+  </div>
+  {% if recent %}
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Number</th>
+        <th>Client</th>
+        <th>Issued</th>
+        <th>Status</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in recent %}
+      <tr>
+        <td><a href="/invoices/{{ row.invoice.id }}">{{ row.invoice.number }}</a></td>
+        <td>{{ clients[row.invoice.client_id].name if row.invoice.client_id in clients else "—" }}</td>
+        <td>{{ row.invoice.issue_date }}</td>
+        <td><span class="pill pill-{{ row.invoice.status }}">{{ row.invoice.status }}</span></td>
+        <td>{{ row.totals.total|money(row.invoice.currency) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="muted">No invoices yet. <a href="/invoices/new">Create your first invoice</a>.</p>
+  {% endif %}
+</div>
+{% endblock %}
