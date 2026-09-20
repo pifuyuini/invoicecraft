@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Terms of Service — {{ app_name }}{% endblock %}
+{% block content %}
+<h1 class="page-title">Terms of Service</h1>
+<div class="card">
+  <p class="muted">Last updated: September 20, 2026</p>
+
+  <h3>1. The service</h3>
+  <p>{{ app_name }} ("the Service") lets you create, manage, and share invoices. The Service is provided "as is" without warranties of any kind. We are not a party to any transaction between you and your clients; invoices you create are your responsibility, including their tax and legal correctness.</p>
+
+  <h3>2. Accounts</h3>
+  <p>You must provide a valid email address and keep your password confidential. You are responsible for all activity under your account.</p>
+
+  <h3>3. Free and paid plans</h3>
+  <p>The Free plan allows up to 5 invoices. The Pro subscription is billed monthly in advance via Stripe and renews automatically until cancelled. You can cancel anytime from the pricing page ("Manage subscription"); the cancellation takes effect at the end of the current billing period. Payments are non-refundable except where required by law.</p>
+
+  <h3>4. Acceptable use</h3>
+  <p>You may not use the Service for fraud, spam, or unlawful invoicing, and you may not attempt to disrupt or reverse-engineer the Service. We may suspend accounts that violate these terms.</p>
+
+  <h3>5. Your data</h3>
+  <p>You retain all rights to the data you enter. You can request account deletion at any time (see the Privacy Policy for what we store).</p>
+
+  <h3>6. Limitation of liability</h3>
+  <p>To the maximum extent permitted by law, our aggregate liability for any claim arising from the Service is limited to the amount you paid us in the 12 months preceding the claim.</p>
+
+  <h3>7. Changes</h3>
+  <p>We may update these terms; material changes will be announced on this page with a new date above. Continued use after a change constitutes acceptance.</p>
+</div>
+{% endblock %}

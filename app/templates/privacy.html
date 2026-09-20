@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Privacy Policy — {{ app_name }}{% endblock %}
+{% block content %}
+<h1 class="page-title">Privacy Policy</h1>
+<div class="card">
+  <p class="muted">Last updated: September 20, 2026</p>
+
+  <h3>What we collect</h3>
+  <ul>
+    <li><strong>Account data</strong> — your email address, name, and a one-way (Argon2) hash of your password. We never store plaintext passwords.</li>
+    <li><strong>Business data</strong> — the clients, invoices, and line items you create.</li>
+    <li><strong>Payment data</strong> — handled entirely by Stripe; we never see or store your card number. We store only your Stripe customer ID and subscription status.</li>
+    <li><strong>Technical data</strong> — a signed session cookie to keep you logged in. No advertising or tracking cookies.</li>
+  </ul>
+
+  <h3>How we use it</h3>
+  <p>Solely to operate the Service: authenticating you, storing your invoices, and processing your subscription. We do not sell your data and we do not use it for advertising.</p>
+
+  <h3>Sharing</h3>
+  <p>Invoice "public links" are visible to anyone you share them with — share them only with your clients. We share data with Stripe as needed to process payments, and we may disclose data if required by law.</p>
+
+  <h3>Retention & deletion</h3>
+  <p>Your data is kept while your account is active. To request full account and data deletion, contact us at the email address published on our website; we will delete your data within 30 days.</p>
+
+  <h3>Security</h3>
+  <p>Passwords are hashed with Argon2, sessions use signed cookies, and all traffic should be served over HTTPS in production. No method of transmission is 100% secure; we encourage you to use a unique password.</p>
+</div>
+{% endblock %}

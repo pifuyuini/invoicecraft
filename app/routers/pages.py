@@ -23,3 +23,13 @@ def pricing(request: Request, user: CurrentUser):
         "pricing.html",
         {"stripe_configured": settings.stripe_configured, "user": user},
     )
+
+
+@router.get("/terms")
+def terms(request: Request, user: CurrentUser):
+    return templates.TemplateResponse(request, "terms.html", {"user": user})
+
+
+@router.get("/privacy")
+def privacy(request: Request, user: CurrentUser):
+    return templates.TemplateResponse(request, "privacy.html", {"user": user})
