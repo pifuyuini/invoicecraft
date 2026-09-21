@@ -1,21 +1,31 @@
 {% extends "base.html" %}
 {% block title %}Sign up — {{ app_name }}{% endblock %}
 {% block content %}
-<div class="auth-box card">
-  <h1>Create your account</h1>
-  {% if error %}<p class="alert-error">{{ error }}</p>{% endif %}
-  <form method="post" action="/signup">
-    <label>Name
-      <input type="text" name="name" autocomplete="name">
-    </label>
-    <label>Email
-      <input type="email" name="email" required autocomplete="email">
-    </label>
-    <label>Password (min 8 characters)
-      <input type="password" name="password" required minlength="8" autocomplete="new-password">
-    </label>
-    <button type="submit" class="btn btn-primary btn-block">Sign up</button>
-  </form>
-  <p class="muted">Already have an account? <a href="/login">Log in</a></p>
+<div class="auth-wrap fade-up">
+  <a class="auth-brand" href="/">
+    <svg class="brand-mark" width="26" height="26" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+      <rect width="64" height="64" rx="14" fill="#4f46e5"/>
+      <path d="M35 10 20 36h10l-3 18 16-26H33l2-18z" fill="#fff"/>
+    </svg>
+    {{ app_name }}
+  </a>
+  <div class="auth-box card">
+    <h1>Create your account</h1>
+    <p class="muted">Free plan included — no credit card required.</p>
+    {% if error %}<p class="alert-error">{{ error }}</p>{% endif %}
+    <form method="post" action="/signup">
+      <label>Name
+        <input type="text" name="name" autocomplete="name">
+      </label>
+      <label>Email
+        <input type="email" name="email" required autocomplete="email">
+      </label>
+      <label>Password (min 8 characters)
+        <input type="password" name="password" required minlength="8" autocomplete="new-password">
+      </label>
+      <button type="submit" class="btn btn-primary btn-block">Sign up</button>
+    </form>
+    <p class="muted auth-alt">Already have an account? <a href="/login">Log in</a></p>
+  </div>
 </div>
 {% endblock %}

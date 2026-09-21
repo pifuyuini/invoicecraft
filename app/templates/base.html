@@ -4,18 +4,33 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}{{ app_name }}{% endblock %}</title>
+  <meta name="description" content="{{ app_name }} — professional invoices in minutes. Create, send, and track invoices with PDF download and public share links.">
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
   <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/pages.css">
+  <script src="/static/app.js" defer></script>
 </head>
 <body>
 <header class="topnav">
   <div class="container nav-inner">
-    <a class="brand" href="/">{{ app_name }}</a>
+    <a class="brand" href="/">
+      <svg class="brand-mark" width="22" height="22" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+        <rect width="64" height="64" rx="14" fill="#4f46e5"/>
+        <path d="M35 10 20 36h10l-3 18 16-26H33l2-18z" fill="#fff"/>
+      </svg>
+      {{ app_name }}
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-label="Menu" aria-expanded="false">
+      <svg class="icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false">
+        <path d="M4 7h16M4 12h16M4 17h16"/>
+      </svg>
+    </button>
     <nav class="nav-links">
       {% if user %}
       <a href="/dashboard">Dashboard</a>
       <a href="/invoices">Invoices</a>
       <a href="/clients">Clients</a>
-      <a href="/pricing">Pricing{% if not user.is_pro %} · <span class="badge">Upgrade</span>{% endif %}</a>
+      <a href="/pricing">Pricing{% if not user.is_pro %} <span class="badge">Upgrade</span>{% endif %}</a>
       <form method="post" action="/logout" class="inline-form">
         <button type="submit" class="link-btn">Log out</button>
       </form>
@@ -30,9 +45,14 @@
 <main class="container main">
   {% block content %}{% endblock %}
 </main>
+<div class="toasts" id="toasts" aria-live="polite">{% for kind, msg in flashes or [] %}<div class="toast toast-{{ kind }}" role="status">{{ msg }}</div>{% endfor %}</div>
 <footer class="footer">
-  <div class="container">
-    <p>{{ app_name }} — professional invoices in minutes. · <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a></p>
+  <div class="container footer-inner">
+    <p>© {{ app_name }} — professional invoices in minutes.</p>
+    <nav class="footer-links">
+      <a href="/terms">Terms</a>
+      <a href="/privacy">Privacy</a>
+    </nav>
   </div>
 </footer>
 </body>

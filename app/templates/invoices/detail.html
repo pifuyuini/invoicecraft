@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}{{ invoice.number }} — {{ app_name }}{% endblock %}
 {% block content %}
-<div class="header-row">
+<div class="header-row fade-up">
   <h1>{{ invoice.number }} <span class="pill pill-{{ invoice.status }}">{{ invoice.status }}</span></h1>
   <div class="actions">
     <a href="/invoices/{{ invoice.id }}/pdf" class="btn btn-ghost btn-sm">Download PDF</a>
@@ -12,7 +12,16 @@
   </div>
 </div>
 
-<div class="card">
+<div class="card fade-up" style="--d:.05s">
+  <div class="status-track">
+    {% for s in ["draft", "sent", "paid"] %}
+    <div class="status-step {% if invoice.status == s %}active{% endif %}">
+      <span class="status-dot"></span>
+      <span class="status-label">{{ s | capitalize }}</span>
+    </div>
+    {% endfor %}
+  </div>
+
   <div class="form-row">
     <div>
       <h3>Client</h3>
@@ -59,7 +68,7 @@
     </tbody>
   </table>
 
-  <table class="table">
+  <table class="table totals-table">
     <tbody>
       <tr>
         <td class="muted">Subtotal</td>
@@ -82,10 +91,13 @@
   {% endif %}
 
   <h3>Share</h3>
-  <p class="muted">Public link: {{ base_url }}/i/{{ invoice.share_token }}</p>
+  <div class="share-row">
+    <span class="muted share-url">{{ base_url }}/i/{{ invoice.share_token }}</span>
+    <button class="btn btn-ghost btn-sm" data-copy="{{ base_url }}/i/{{ invoice.share_token }}">Copy link</button>
+  </div>
 </div>
 
-<div class="card">
+<div class="card fade-up" style="--d:.1s">
   <h3>Update status</h3>
   <div class="actions">
     {% for s in ["sent", "paid", "draft"] %}

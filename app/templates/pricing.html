@@ -1,35 +1,44 @@
 {% extends "base.html" %}
 {% block title %}Pricing — {{ app_name }}{% endblock %}
 {% block content %}
-<h1 class="page-title">Pricing</h1>
+<section class="pricing-head fade-up">
+  <h1 class="page-title">Simple, honest pricing</h1>
+  <p class="lead">Start free, upgrade when you need unlimited invoicing. No hidden fees, cancel anytime.</p>
+</section>
+
 {% if request.query_params.get("limit") == "1" %}
-<p class="alert-info">You've used all 5 free invoices. Upgrade to Pro for unlimited invoicing.</p>
+<p class="alert-info pricing-alert">You've used all 5 free invoices. Upgrade to Pro for unlimited invoicing.</p>
 {% endif %}
 {% if request.query_params.get("unavailable") == "1" %}
-<p class="alert-info">Payments are not configured yet. Please check back soon.</p>
+<p class="alert-info pricing-alert">Payments are not configured yet. Please check back soon.</p>
 {% endif %}
-<div class="pricing-grid">
+
+<div class="pricing-grid reveal">
   <div class="card price-card">
     <h2>Free</h2>
     <p class="price">$0</p>
-    <ul>
-      <li>Up to 5 invoices</li>
-      <li>PDF download</li>
-      <li>Public share links</li>
-      <li>Client management</li>
+    <p class="muted">For getting started</p>
+    <ul class="check-list">
+      <li><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Up to 5 invoices</li>
+      <li><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>PDF download</li>
+      <li><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Public share links</li>
+      <li><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Client management</li>
     </ul>
     {% if not user %}
     <a href="/signup" class="btn btn-ghost btn-block">Get started</a>
     {% endif %}
   </div>
+
   <div class="card price-card highlighted">
+    <span class="badge price-flag">Most popular</span>
     <h2>Pro</h2>
     <p class="price">$6<span class="per">/month</span></p>
-    <ul>
-      <li>Unlimited invoices</li>
-      <li>Everything in Free</li>
-      <li>No watermark on PDFs</li>
-      <li>Priority support</li>
+    <p class="muted">For freelancers &amp; growing teams</p>
+    <ul class="check-list">
+      <li><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Unlimited invoices</li>
+      <li><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Everything in Free</li>
+      <li><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>No watermark on PDFs</li>
+      <li><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Priority support</li>
     </ul>
     {% if not user %}
     <a href="/signup" class="btn btn-primary btn-block">Get started</a>

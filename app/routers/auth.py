@@ -5,6 +5,7 @@ from fastapi.responses import RedirectResponse
 from sqlmodel import select
 
 from ..db import SessionDep
+from ..flash import flash
 from ..models import User
 from ..security import (
     CurrentUser,
@@ -13,7 +14,7 @@ from ..security import (
     logout_user,
     verify_password,
 )
-from ..templating import templates
+from ..templating import render
 
 router = APIRouter(tags=["auth"])
 
@@ -22,7 +23,7 @@ router = APIRouter(tags=["auth"])
 def signup_form(request: Request, user: CurrentUser):
     if user:
         return RedirectResponse("/dashboard", 303)
-    return templates.TemplateResponse(request, "auth/signup.html", {"error": None})
+    return render(request, "auth/signup.html", {"error": None})
 
 
 @router.post("/signup")
@@ -40,14 +41,13 @@ def signup(
     elif session.exec(select(User).where(User.email == email)).first():
         error = "This email is already registered."
     if error:
-        return templates.TemplateResponse(
-            request, "auth/signup.html", {"error": error}, status_code=400
-        )
+        return render(request, "auth/signup.html", {"error": error}, status_code=400)
     user = User(email=email, name=name.strip(), hashed_password=hash_password(password))
     session.add(user)
     session.commit()
     session.refresh(user)
     login_user(request, user)
+    flash(request, "Welcome to InvoiceCraft! Create your first invoice.")
     return RedirectResponse("/dashboard", 303)
 
 
@@ -55,7 +55,7 @@ def signup(
 def login_form(request: Request, user: CurrentUser):
     if user:
         return RedirectResponse("/dashboard", 303)
-    return templates.TemplateResponse(request, "auth/login.html", {"error": None})
+    return render(request, "auth/login.html", {"error": None})
 
 
 @router.post("/login")
@@ -68,17 +68,19 @@ def login(
     email = email.strip().lower()
     user = session.exec(select(User).where(User.email == email)).first()
     if not user or not verify_password(password, user.hashed_password):
-        return templates.TemplateResponse(
+        return render(
             request,
             "auth/login.html",
             {"error": "Invalid email or password."},
             status_code=400,
         )
     login_user(request, user)
+    flash(request, "Welcome back!")
     return RedirectResponse("/dashboard", 303)
 
 
 @router.post("/logout")
 def logout(request: Request):
     logout_user(request)
+    flash(request, "You've been logged out.", "info")
     return RedirectResponse("/", 303)

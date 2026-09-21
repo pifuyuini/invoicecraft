@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% block title %}Invoices — {{ app_name }}{% endblock %}
 {% block content %}
-<div class="header-row">
+<div class="header-row fade-up">
   <h1>Invoices</h1>
   <a href="/invoices/new" class="btn btn-primary">New invoice</a>
 </div>
 
-<div class="card">
+<div class="card fade-up" style="--d:.05s">
   {% if rows %}
-  <table class="table">
+  <table class="table table-hover">
     <thead>
       <tr>
         <th>Number</th>
@@ -31,7 +31,16 @@
     </tbody>
   </table>
   {% else %}
-  <p class="muted">No invoices yet. <a href="/invoices/new">Create your first invoice</a>.</p>
+  <div class="empty-state">
+    <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+      <polyline points="14 2 14 8 20 8"></polyline>
+      <line x1="9" y1="13" x2="15" y2="13"></line>
+      <line x1="9" y1="17" x2="13" y2="17"></line>
+    </svg>
+    <p>No invoices yet — create your first one in under a minute.</p>
+    <a href="/invoices/new" class="btn btn-primary">Create invoice</a>
+  </div>
   {% endif %}
 </div>
 {% endblock %}

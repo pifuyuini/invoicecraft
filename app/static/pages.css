@@ -1,0 +1,139 @@
+/* Page-specific styles for app pages (dashboard, invoices, clients, public invoice).
+   Loaded after style.css; reuses global classes and CSS vars. */
+
+/* --- Table row hover affordance --- */
+.table-hover tbody tr:hover td {
+  background: color-mix(in srgb, var(--primary) 4%, transparent);
+}
+
+/* Right-aligned totals block on detail/public pages */
+.totals-table td:last-child {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* --- Invoice form: form + sticky live summary --- */
+.invoice-form-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 20px;
+  align-items: start;
+}
+.invoice-summary {
+  position: sticky;
+  top: 20px;
+}
+.invoice-summary h3 {
+  margin-top: 0;
+}
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 8px 0;
+  font-variant-numeric: tabular-nums;
+}
+.summary-total {
+  border-top: 1px solid var(--border);
+  margin-top: 4px;
+  padding-top: 12px;
+  font-size: 1.15rem;
+}
+.summary-actions {
+  margin-top: 16px;
+  flex-direction: column;
+  align-items: stretch;
+}
+.row-amount {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--muted);
+}
+
+/* --- Invoice detail: status timeline --- */
+.status-track {
+  display: flex;
+  align-items: center;
+  margin: 4px 0 24px;
+}
+.status-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.status-step + .status-step::before {
+  content: "";
+  width: 48px;
+  height: 2px;
+  background: var(--border);
+  margin: 0 12px;
+}
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--border);
+  flex: none;
+}
+.status-step.active {
+  color: var(--primary);
+}
+.status-step.active .status-dot {
+  background: var(--primary);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 18%, transparent);
+}
+
+/* --- Invoice detail: share row --- */
+.share-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.share-url {
+  word-break: break-all;
+}
+
+/* --- Public invoice: standalone document --- */
+.public-doc {
+  max-width: 720px;
+  margin: 0 auto;
+}
+.public-doc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.public-doc-header h1 {
+  margin: 0;
+}
+.public-doc-kicker {
+  margin: 0 0 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+}
+.public-doc-footer {
+  text-align: center;
+  margin-top: 16px;
+}
+
+@media (max-width: 860px) {
+  .invoice-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .invoice-summary {
+    position: static;
+  }
+  .status-step + .status-step::before {
+    width: 20px;
+    margin: 0 8px;
+  }
+}

@@ -4,6 +4,7 @@ from fastapi import Depends, HTTPException, Request
 from pwdlib import PasswordHash
 
 from .db import SessionDep
+from .flash import flash
 from .models import User
 
 password_hash = PasswordHash.recommended()
@@ -37,8 +38,9 @@ def get_current_user(request: Request, session: SessionDep) -> User | None:
 CurrentUser = Annotated[User | None, Depends(get_current_user)]
 
 
-def require_user(user: CurrentUser) -> User:
+def require_user(request: Request, user: CurrentUser) -> User:
     if user is None:
+        flash(request, "Please log in to continue.", "info")
         raise HTTPException(status_code=303, headers={"Location": "/login"})
     return user
 

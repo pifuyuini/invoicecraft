@@ -6,10 +6,11 @@ from sqlmodel import func, select
 
 from ..config import settings
 from ..db import SessionDep
+from ..flash import flash
 from ..models import Client, Invoice, InvoiceItem, User, compute_totals
 from ..security import CurrentUser, RequiredUser
 from ..services.pdf import render_invoice_pdf
-from ..templating import templates
+from ..templating import render
 
 router = APIRouter(tags=["invoices"])
 
@@ -98,7 +99,7 @@ def dashboard(request: Request, session: SessionDep, user: RequiredUser):
             draft_count += 1
         rows.append({"invoice": invoice, "totals": totals})
     clients = {c.id: c for c in _get_clients(session, user)}
-    return templates.TemplateResponse(
+    return render(
         request,
         "dashboard.html",
         {
@@ -131,7 +132,7 @@ def invoice_list(request: Request, session: SessionDep, user: RequiredUser):
         }
         for invoice in invoices
     ]
-    return templates.TemplateResponse(
+    return render(
         request,
         "invoices/list.html",
         {"user": user, "rows": rows, "clients": clients},
@@ -140,7 +141,7 @@ def invoice_list(request: Request, session: SessionDep, user: RequiredUser):
 
 @router.get("/invoices/new")
 def invoice_new(request: Request, session: SessionDep, user: RequiredUser):
-    return templates.TemplateResponse(
+    return render(
         request,
         "invoices/new.html",
         {
@@ -161,7 +162,7 @@ async def invoice_create(request: Request, session: SessionDep, user: RequiredUs
 
     items = _parse_items(form)
     if not items:
-        return templates.TemplateResponse(
+        return render(
             request,
             "invoices/new.html",
             {
@@ -204,6 +205,7 @@ async def invoice_create(request: Request, session: SessionDep, user: RequiredUs
             )
         )
     session.commit()
+    flash(request, f"Invoice {invoice.number} created.")
     return RedirectResponse(f"/invoices/{invoice.id}", 303)
 
 
@@ -221,7 +223,7 @@ def invoice_detail(
     invoice = _get_invoice(session, user, invoice_id)
     items = _get_items(session, invoice.id)
     client = session.get(Client, invoice.client_id) if invoice.client_id else None
-    return templates.TemplateResponse(
+    return render(
         request,
         "invoices/detail.html",
         {
@@ -240,7 +242,7 @@ def invoice_edit_form(
     request: Request, session: SessionDep, user: RequiredUser, invoice_id: int
 ):
     invoice = _get_invoice(session, user, invoice_id)
-    return templates.TemplateResponse(
+    return render(
         request,
         "invoices/edit.html",
         {
@@ -261,7 +263,7 @@ async def invoice_edit(
     form = await request.form()
     items = _parse_items(form)
     if not items:
-        return templates.TemplateResponse(
+        return render(
             request,
             "invoices/edit.html",
             {
@@ -301,6 +303,7 @@ async def invoice_edit(
             )
         )
     session.commit()
+    flash(request, f"Invoice {invoice.number} updated.")
     return RedirectResponse(f"/invoices/{invoice.id}", 303)
 
 
@@ -316,6 +319,7 @@ async def invoice_status(
     invoice.status = status
     session.add(invoice)
     session.commit()
+    flash(request, f"Invoice marked as {status}.")
     return RedirectResponse(f"/invoices/{invoice.id}", 303)
 
 
@@ -328,6 +332,7 @@ def invoice_delete(
         session.delete(item)
     session.delete(invoice)
     session.commit()
+    flash(request, "Invoice deleted.", "info")
     return RedirectResponse("/invoices", 303)
 
 
@@ -356,7 +361,7 @@ def invoice_public(request: Request, session: SessionDep, user: CurrentUser, sha
     items = _get_items(session, invoice.id)
     client = session.get(Client, invoice.client_id) if invoice.client_id else None
     owner = session.get(User, invoice.user_id)
-    return templates.TemplateResponse(
+    return render(
         request,
         "public_invoice.html",
         {

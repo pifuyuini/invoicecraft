@@ -5,9 +5,10 @@ from fastapi.responses import RedirectResponse
 from sqlmodel import func, select
 
 from ..db import SessionDep
+from ..flash import flash
 from ..models import Client, Invoice, User
 from ..security import RequiredUser
-from ..templating import templates
+from ..templating import render
 
 router = APIRouter(tags=["clients"])
 
@@ -36,14 +37,14 @@ def client_list(request: Request, session: SessionDep, user: RequiredUser):
         {"client": client, "invoice_count": _invoice_count(session, client.id)}
         for client in clients
     ]
-    return templates.TemplateResponse(
+    return render(
         request, "clients/list.html", {"user": user, "rows": rows}
     )
 
 
 @router.get("/clients/new")
 def client_new(request: Request, user: RequiredUser):
-    return templates.TemplateResponse(
+    return render(
         request, "clients/new.html", {"user": user, "error": None}
     )
 
@@ -61,7 +62,7 @@ def client_create(
 ):
     name = name.strip()
     if not name:
-        return templates.TemplateResponse(
+        return render(
             request,
             "clients/new.html",
             {"user": user, "error": "Name is required."},
@@ -77,6 +78,7 @@ def client_create(
     )
     session.add(client)
     session.commit()
+    flash(request, "Client saved.")
     return RedirectResponse("/clients", 303)
 
 
@@ -85,7 +87,7 @@ def client_edit_form(
     request: Request, session: SessionDep, user: RequiredUser, client_id: int
 ):
     client = _get_client(session, user, client_id)
-    return templates.TemplateResponse(
+    return render(
         request,
         "clients/edit.html",
         {"user": user, "client": client, "error": None},
@@ -107,7 +109,7 @@ def client_edit(
     client = _get_client(session, user, client_id)
     name = name.strip()
     if not name:
-        return templates.TemplateResponse(
+        return render(
             request,
             "clients/edit.html",
             {"user": user, "client": client, "error": "Name is required."},
@@ -120,6 +122,7 @@ def client_edit(
     client.notes = notes.strip()
     session.add(client)
     session.commit()
+    flash(request, "Client saved.")
     return RedirectResponse("/clients", 303)
 
 
@@ -129,7 +132,7 @@ def client_delete(
 ):
     client = _get_client(session, user, client_id)
     if _invoice_count(session, client.id) > 0:
-        return templates.TemplateResponse(
+        return render(
             request,
             "clients/edit.html",
             {
@@ -141,4 +144,5 @@ def client_delete(
         )
     session.delete(client)
     session.commit()
+    flash(request, "Client deleted.", "info")
     return RedirectResponse("/clients", 303)
