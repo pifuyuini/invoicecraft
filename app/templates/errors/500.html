@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Something went wrong — {{ app_name }}{% endblock %}
+{% block content %}
+<div class="card error-card fade-up">
+  <p class="error-code">500</p>
+  <h1>Something went wrong</h1>
+  <p class="muted">That's on us — an unexpected error occurred. Please try again in a moment.</p>
+  <p><a href="/" class="btn btn-primary">Back to home</a></p>
+</div>
+{% endblock %}

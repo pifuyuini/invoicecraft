@@ -116,7 +116,9 @@ def dashboard(request: Request, session: SessionDep, user: RequiredUser):
 
 
 @router.get("/invoices")
-def invoice_list(request: Request, session: SessionDep, user: RequiredUser):
+def invoice_list(
+    request: Request, session: SessionDep, user: RequiredUser, status: str | None = None
+):
     invoices = list(
         session.exec(
             select(Invoice)
@@ -124,6 +126,12 @@ def invoice_list(request: Request, session: SessionDep, user: RequiredUser):
             .order_by(Invoice.id.desc())
         ).all()
     )
+    counts = {"all": len(invoices)}
+    for s in VALID_STATUSES:
+        counts[s] = sum(1 for i in invoices if i.status == s)
+    active_status = status if status in VALID_STATUSES else "all"
+    if active_status != "all":
+        invoices = [i for i in invoices if i.status == active_status]
     clients = {c.id: c for c in _get_clients(session, user)}
     rows = [
         {
@@ -135,7 +143,13 @@ def invoice_list(request: Request, session: SessionDep, user: RequiredUser):
     return render(
         request,
         "invoices/list.html",
-        {"user": user, "rows": rows, "clients": clients},
+        {
+            "user": user,
+            "rows": rows,
+            "clients": clients,
+            "counts": counts,
+            "active_status": active_status,
+        },
     )
 
 

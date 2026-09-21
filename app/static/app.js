@@ -71,6 +71,19 @@
     });
   }
 
+  /* ---------- Password visibility toggle ---------- */
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-pw-toggle]");
+    if (!btn) return;
+    const wrap = btn.closest(".pw-wrap");
+    const input = wrap ? wrap.querySelector("input") : null;
+    if (!input) return;
+    const show = input.type === "password";
+    input.type = show ? "text" : "password";
+    btn.setAttribute("aria-label", show ? "Hide password" : "Show password");
+    btn.classList.toggle("on", show);
+  });
+
   /* ---------- Scroll reveal: .reveal → .in ---------- */
   if (!reducedMotion.matches && "IntersectionObserver" in window) {
     const io = new IntersectionObserver(

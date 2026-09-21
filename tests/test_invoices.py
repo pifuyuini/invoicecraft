@@ -95,6 +95,17 @@ def test_free_limit_blocks_creation(client, monkeypatch):
     assert resp.headers["location"] == "/pricing?limit=1"
 
 
+def test_invoice_status_filter(client):
+    signup(client)
+    make_client(client)
+    make_invoice(client)
+    client.post("/invoices/1/status", data={"status": "sent"})
+
+    assert "INV-0001" in client.get("/invoices?status=sent").text
+    assert "INV-0001" not in client.get("/invoices?status=paid").text
+    assert "INV-0001" in client.get("/invoices").text
+
+
 def test_invoice_requires_at_least_one_item(client):
     signup(client)
     resp = post_form(

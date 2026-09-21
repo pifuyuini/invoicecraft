@@ -220,13 +220,13 @@ a:focus-visible, button:focus-visible, .btn:focus-visible {
   50% { transform: translateY(-7px); }
 }
 .fade-up { animation: fade-up 0.5s var(--ease) both; animation-delay: var(--d, 0s); }
-.reveal {
+html.js .reveal {
   opacity: 0;
   transform: translateY(8px);
   transition: opacity 0.55s var(--ease), transform 0.55s var(--ease);
   transition-delay: var(--d, 0s);
 }
-.reveal.in { opacity: 1; transform: translateY(0); }
+html.js .reveal.in { opacity: 1; transform: translateY(0); }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -236,7 +236,7 @@ a:focus-visible, button:focus-visible, .btn:focus-visible {
     transition-duration: 0.01ms !important;
     transition-delay: 0s !important;
   }
-  .reveal { opacity: 1; transform: none; }
+  html.js .reveal { opacity: 1; transform: none; }
 }
 
 /* ---------- Hero (landing) ---------- */

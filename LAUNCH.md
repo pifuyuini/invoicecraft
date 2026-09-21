@@ -86,7 +86,7 @@ docker run -d --restart=always -p 8000:8000 \
 
 - 收款即产生税务义务；Stripe 内置 Stripe Tax 可按需开启
 - 服务条款（/terms）与隐私政策（/privacy）页面已内置通用模板；Stripe 激活实名认证时通常要求填写这两个页面的 URL。**上线前请通读并按你的实际业务主体、所在地法律修改模板内容**
-- 建议加 `SECURITY` 响应头与限流（如用 Cloudflare 免费版挡在前面）
+- 已内置安全响应头（CSP、X-Frame-Options、nosniff 等）；限流建议用 Cloudflare 免费版挡在前面
 - 密码已用 Argon2 哈希存储；会话 cookie 已签名。不要在日志中打印用户数据
 
 ## 常见问题

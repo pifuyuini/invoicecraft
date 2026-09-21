@@ -6,6 +6,13 @@
   <a href="/invoices/new" class="btn btn-primary">New invoice</a>
 </div>
 
+<div class="tabs fade-up" style="--d:.03s">
+  <a href="/invoices" class="tab {% if active_status == 'all' %}active{% endif %}">All ({{ counts.all }})</a>
+  <a href="/invoices?status=draft" class="tab {% if active_status == 'draft' %}active{% endif %}">Draft ({{ counts.draft }})</a>
+  <a href="/invoices?status=sent" class="tab {% if active_status == 'sent' %}active{% endif %}">Sent ({{ counts.sent }})</a>
+  <a href="/invoices?status=paid" class="tab {% if active_status == 'paid' %}active{% endif %}">Paid ({{ counts.paid }})</a>
+</div>
+
 <div class="card fade-up" style="--d:.05s">
   {% if rows %}
   <table class="table table-hover">
@@ -31,6 +38,11 @@
     </tbody>
   </table>
   {% else %}
+  {% if active_status != 'all' %}
+  <div class="empty-state">
+    <p class="muted">No {{ active_status }} invoices.</p>
+  </div>
+  {% else %}
   <div class="empty-state">
     <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -41,6 +53,7 @@
     <p>No invoices yet — create your first one in under a minute.</p>
     <a href="/invoices/new" class="btn btn-primary">Create invoice</a>
   </div>
+  {% endif %}
   {% endif %}
 </div>
 {% endblock %}

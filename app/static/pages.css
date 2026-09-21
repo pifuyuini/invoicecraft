@@ -137,3 +137,30 @@
     margin: 0 8px;
   }
 }
+
+/* ---------- Tabs (invoice list filter) ---------- */
+.tabs { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+.tab {
+  padding: 6px 14px; border-radius: 999px; font-size: 0.88rem; font-weight: 600;
+  color: var(--muted); border: 1px solid transparent; transition: all 0.15s var(--ease);
+}
+.tab:hover { color: var(--text); background: var(--surface); text-decoration: none; }
+.tab.active { color: var(--primary); background: var(--primary-soft); border-color: var(--primary-ring); }
+
+/* ---------- Password visibility toggle ---------- */
+.pw-wrap { position: relative; display: block; margin-top: 4px; }
+.pw-wrap input { margin-top: 0; padding-right: 42px; }
+.pw-toggle {
+  position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; padding: 6px; cursor: pointer; color: var(--muted);
+  border-radius: 8px; display: flex; align-items: center;
+}
+.pw-toggle:hover { color: var(--text); }
+.pw-toggle.on { color: var(--primary); }
+
+/* ---------- Error pages ---------- */
+.error-code {
+  font-size: 3rem; font-weight: 800; letter-spacing: -0.03em; margin: 0;
+  background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.error-card { max-width: 480px; margin: 56px auto; text-align: center; }
