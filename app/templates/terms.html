@@ -1,9 +1,7 @@
-{% extends "base.html" %}
-{% block title %}Terms of Service — {{ app_name }}{% endblock %}
-{% block content %}
+{% extends 'base.html' %}{% block title %}{{ t('Terms of Service') }} — InvoiceCraft{% endblock %}{% block content %}<article class="legal-page"><div data-ui-language="zh-CN" {% if lang != 'zh-CN' %}hidden{% endif %}><h1>服务条款</h1><p>最后更新于 2026 年 9 月 22 日</p><h3>1. 服务内容</h3><p>InvoiceCraft 帮助您创建、管理和分享账单。服务按现状提供，不作任何担保。我们不参与您与客户之间的交易；您需对所创建账单的准确性以及税务和法律合规负责。</p><h3>2. 账户</h3><p>请提供有效的邮箱地址并妥善保管密码。您需对账户中的活动负责。</p><h3>3. 免费与付费方案</h3><p>{% if settings.billing_enabled %}免费方案支持最多 5 张账单。{% else %}当前版本支持无限量账单，暂未启用付费方案。{% endif %}如启用 Pro 订阅，费用由 Stripe 按月预付，并自动续订直至取消。您可在方案页面管理订阅；取消将在当前计费周期结束时生效。除法律另有要求外，付款不予退还。</p><h3>4. 使用规范</h3><p>请勿将服务用于欺诈、垃圾信息或非法开票，也不得尝试干扰或逆向工程本服务。违规账户可能被暂停。</p><h3>5. 您的数据</h3><p>您保留输入数据的全部权利。您可以随时申请删除账户，数据存储详情请参阅隐私政策。</p><h3>6. 责任限制</h3><p>在法律允许的最大范围内，我们对服务相关索赔的累计责任，以您在索赔前 12 个月支付的服务费用为限。</p><h3>7. 条款变更</h3><p>条款可能更新，重大变更将通过本页和更新日期公布。变更后继续使用服务即表示接受变更。</p></div><div data-ui-language="en" {% if lang != 'en' %}hidden{% endif %}>
 <h1 class="page-title">Terms of Service</h1>
-<div class="card">
-  <p class="muted">Last updated: September 20, 2026</p>
+<div>
+  <p class="muted">Last updated: September 22, 2026</p>
 
   <h3>1. The service</h3>
   <p>{{ app_name }} ("the Service") lets you create, manage, and share invoices. The Service is provided "as is" without warranties of any kind. We are not a party to any transaction between you and your clients; invoices you create are your responsibility, including their tax and legal correctness.</p>
@@ -12,7 +10,7 @@
   <p>You must provide a valid email address and keep your password confidential. You are responsible for all activity under your account.</p>
 
   <h3>3. Free and paid plans</h3>
-  <p>The Free plan allows up to 5 invoices. The Pro subscription is billed monthly in advance via Stripe and renews automatically until cancelled. You can cancel anytime from the pricing page ("Manage subscription"); the cancellation takes effect at the end of the current billing period. Payments are non-refundable except where required by law.</p>
+  <p>{% if settings.billing_enabled %}The Free plan allows up to 5 invoices.{% else %}Unlimited invoices are available in this version. Paid plans are currently disabled.{% endif %} The Pro subscription is billed monthly in advance via Stripe and renews automatically until cancelled. You can cancel anytime from the pricing page ("Manage subscription"); the cancellation takes effect at the end of the current billing period. Payments are non-refundable except where required by law.</p>
 
   <h3>4. Acceptable use</h3>
   <p>You may not use the Service for fraud, spam, or unlawful invoicing, and you may not attempt to disrupt or reverse-engineer the Service. We may suspend accounts that violate these terms.</p>
@@ -26,4 +24,4 @@
   <h3>7. Changes</h3>
   <p>We may update these terms; material changes will be announced on this page with a new date above. Continued use after a change constitutes acceptance.</p>
 </div>
-{% endblock %}
+</div></article>{% endblock %}

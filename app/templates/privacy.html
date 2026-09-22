@@ -1,9 +1,7 @@
-{% extends "base.html" %}
-{% block title %}Privacy Policy — {{ app_name }}{% endblock %}
-{% block content %}
+{% extends 'base.html' %}{% block title %}{{ t('Privacy Policy') }} — InvoiceCraft{% endblock %}{% block content %}<article class="legal-page"><div data-ui-language="zh-CN" {% if lang != 'zh-CN' %}hidden{% endif %}><h1>隐私政策</h1><p>最后更新于 2026 年 9 月 22 日</p><h3>我们收集的信息</h3><p>账户数据包括您的邮箱、姓名和使用 Argon2 处理的密码摘要，不存储明文密码。业务数据包括客户、开票方信息、账单、明细和偏好。支付由 Stripe 处理，我们仅保存 Stripe 客户标识与订阅状态，不接触或存储银行卡号。我们使用签名会话 Cookie 保持登录，不使用广告或追踪 Cookie。</p><h3>信息用途</h3><p>信息仅用于提供服务，包括账户认证、保存账单和处理订阅。我们不会出售您的数据，也不将其用于广告。</p><h3>分享</h3><p>任何持有公开链接的人都可以查看对应账单，请谨慎分享。需要处理付款时，我们会与 Stripe 共享必要数据；法律要求时，我们也可能披露数据。</p><h3>保留与删除</h3><p>账户有效期间，您的数据会被保留。申请删除账户和全部数据，请通过网站公布的联系方式联系我们；我们将在 30 天内删除您的数据。</p><h3>安全</h3><p>密码使用 Argon2 处理，会话使用签名 Cookie。正式部署应使用 HTTPS。任何传输方式都不能保证绝对安全，建议使用独立密码。</p></div><div data-ui-language="en" {% if lang != 'en' %}hidden{% endif %}>
 <h1 class="page-title">Privacy Policy</h1>
-<div class="card">
-  <p class="muted">Last updated: September 20, 2026</p>
+<div>
+  <p class="muted">Last updated: September 22, 2026</p>
 
   <h3>What we collect</h3>
   <ul>
@@ -25,4 +23,4 @@
   <h3>Security</h3>
   <p>Passwords are hashed with Argon2, sessions use signed cookies, and all traffic should be served over HTTPS in production. No method of transmission is 100% secure; we encourage you to use a unique password.</p>
 </div>
-{% endblock %}
+</div></article>{% endblock %}

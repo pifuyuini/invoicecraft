@@ -1,156 +1,18 @@
-{% if error %}<p class="alert-error">{{ error }}</p>{% endif %}
-<form method="post" action="{{ action }}" id="invoice-form">
-  <div class="invoice-form-grid">
-    <div class="card">
-      <div class="form-row">
-        <label>Client
-          <select name="client_id">
-            <option value="">— No client —</option>
-            {% for client in clients %}
-            <option value="{{ client.id }}" {% if invoice and invoice.client_id == client.id %}selected{% endif %}>{{ client.name }}</option>
-            {% endfor %}
-          </select>
-        </label>
-        <label>Currency
-          <select name="currency" id="currency-select">
-            {% for c in currencies %}
-            <option value="{{ c }}" {% if (invoice and invoice.currency == c) or (not invoice and c == "USD") %}selected{% endif %}>{{ c }}</option>
-            {% endfor %}
-          </select>
-        </label>
-      </div>
-      <div class="form-row">
-        <label>Issue date
-          <input type="date" name="issue_date" value="{{ invoice.issue_date if invoice else today }}">
-        </label>
-        <label>Due date
-          <input type="date" name="due_date" value="{{ invoice.due_date if invoice and invoice.due_date else '' }}">
-        </label>
-      </div>
-      <div class="form-row">
-        <label>Tax rate (%)
-          <input type="number" name="tax_rate" step="0.01" min="0" value="{{ '%g' % invoice.tax_rate if invoice else 0 }}">
-        </label>
-      </div>
-
-      <h3>Line items</h3>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Description</th>
-            <th>Quantity</th>
-            <th>Unit price</th>
-            <th>Amount</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="items-body">
-          {% if items %}
-            {% for item in items %}
-            <tr>
-              <td><input type="text" name="description" value="{{ item.description }}"></td>
-              <td><input type="number" name="quantity" step="any" min="0" value="{{ '%g' % item.quantity }}"></td>
-              <td><input type="number" name="unit_price" step="0.01" min="0" value="{{ '%g' % item.unit_price }}"></td>
-              <td class="row-amount">—</td>
-              <td><button type="button" class="btn btn-ghost btn-sm remove-row">Remove</button></td>
-            </tr>
-            {% endfor %}
-          {% else %}
-            <tr>
-              <td><input type="text" name="description" value=""></td>
-              <td><input type="number" name="quantity" step="any" min="0" value="1"></td>
-              <td><input type="number" name="unit_price" step="0.01" min="0" value="0"></td>
-              <td class="row-amount">—</td>
-              <td><button type="button" class="btn btn-ghost btn-sm remove-row">Remove</button></td>
-            </tr>
-          {% endif %}
-        </tbody>
-      </table>
-      <p><button type="button" class="btn btn-ghost btn-sm" id="add-item">Add item</button></p>
-
-      <label>Notes
-        <textarea name="notes">{{ invoice.notes if invoice else '' }}</textarea>
-      </label>
-    </div>
-
-    <div class="invoice-summary-col">
-      <div class="card invoice-summary">
-        <h3>Summary</h3>
-        <div class="summary-row">
-          <span class="muted">Subtotal</span>
-          <span id="sum-subtotal">—</span>
-        </div>
-        <div class="summary-row">
-          <span class="muted">Tax (<span id="sum-tax-rate">0</span>%)</span>
-          <span id="sum-tax">—</span>
-        </div>
-        <div class="summary-row summary-total">
-          <strong>Total</strong>
-          <strong id="sum-total">—</strong>
-        </div>
-        <div class="actions summary-actions">
-          <button type="submit" class="btn btn-primary btn-block">{{ submit_label }}</button>
-          <a href="{{ cancel_url }}" class="btn btn-ghost btn-block">Cancel</a>
-        </div>
-      </div>
-    </div>
-  </div>
+{% from '_macros.html' import label with context %}
+{% macro field_error(key) %}<span class="field-error" data-error-for="{{ key }}" id="error-{{ key }}">{{ t(errors[key]) if errors and key in errors else '' }}</span>{% endmacro %}
+{% if error %}<div class="alert-error" role="alert" tabindex="-1">{{ t(error) }}</div>{% endif %}
+<div class="editor-tabs" role="group" aria-label="{{ t('Editor view') }}"><button class="active" type="button" data-editor-tab="edit" aria-pressed="true">{{ label('Editor') }}</button><button type="button" data-editor-tab="preview" aria-pressed="false">{{ label('Preview') }}</button></div>
+<form method="post" action="{{ action }}" id="invoice-form" data-dirty-form>
+<input type="hidden" name="return_to" value="{{ return_to or '/invoices' }}">{% if invoice %}<input type="hidden" name="invoice_id" value="{{ invoice.id }}">{% endif %}
+<div class="editor-layout" data-editor-view="edit"><div class="editor-panel">
+<section class="form-section"><div class="section-heading"><h2><span class="section-number">01</span>{{ label('The essentials') }}</h2><span class="section-note">{{ label('Who and when') }}</span></div>
+<div class="form-row"><label><span class="label-row"><span>{{ label('Client') }}</span><button {% if invoice and invoice.status != "draft" %}disabled{% endif %} type="button" class="text-button small-text" data-open-dialog="client-dialog" aria-label="{{ t('New client') }}" data-i18n-aria="New client">＋ {{ label('New client') }}</button></span>{% if invoice and invoice.status != "draft" %}<input type="hidden" name="client_id" value="{{ form.client_id or '' }}">{% endif %}<select {% if invoice and invoice.status != "draft" %}disabled{% endif %} name="client_id" id="invoice-client" aria-label="{{ t('Client') }}" data-i18n-aria="Client" aria-describedby="error-client_id"><option value="" data-i18n="No client">{{ t('No client') }}</option>{% for client in clients %}<option value="{{ client.id }}" {% if form.client_id|string == client.id|string %}selected{% endif %}>{{ client.name }}</option>{% endfor %}</select>{{ field_error('client_id') }}</label><label>{{ label('Currency') }}<select name="currency" id="currency-select" aria-describedby="error-currency">{% for currency in currencies %}<option {% if form.currency == currency %}selected{% endif %}>{{ currency }}</option>{% endfor %}</select>{{ field_error('currency') }}</label></div>
+<div class="form-row"><label>{{ label('Issue date') }}<input type="date" name="issue_date" value="{{ form.issue_date }}" required aria-describedby="error-issue_date">{{ field_error('issue_date') }}</label><label>{{ label('Due date') }}<input type="date" name="due_date" value="{{ form.due_date or '' }}" aria-describedby="error-due_date">{{ field_error('due_date') }}</label></div>
+<div class="due-shortcuts"><span>{{ label('Payment terms') }}</span>{% for days in [7,14,30] %}<button type="button" data-due-days="{{ days }}">{{ days }} {{ label('days') }}</button>{% endfor %}</div></section>
+<section class="form-section"><div class="section-heading"><h2><span class="section-number">02</span>{{ label('Your work') }}</h2><span class="section-note">{{ label('A little detail goes a long way') }}</span></div>
+<div id="items-body">{% for item in form['items'] %}<div class="line-item" data-item-row><div class="item-heading"><span class="item-number">{{ '%02d' % loop.index }}</span><button type="button" class="text-button remove-row">{{ label('Remove') }}</button></div><label>{{ label('Description') }}<textarea name="description" rows="2" placeholder="{{ t('What did you create?') }}" data-i18n-placeholder="What did you create?" aria-describedby="error-description_{{ loop.index0 }}">{{ item.description }}</textarea>{{ field_error('description_' ~ loop.index0) }}</label><div class="item-numbers"><label>{{ label('Quantity') }}<input type="number" name="quantity" value="{{ item.quantity }}" step="any" min="0" required aria-describedby="error-quantity_{{ loop.index0 }}">{{ field_error('quantity_' ~ loop.index0) }}</label><label>{{ label('Unit price') }}<input type="number" name="unit_price" value="{{ item.unit_price }}" step="any" min="0" required aria-describedby="error-unit_price_{{ loop.index0 }}">{{ field_error('unit_price_' ~ loop.index0) }}</label><div class="item-amount"><span>{{ label('Amount') }}</span><strong class="row-amount">—</strong></div></div></div>{% endfor %}</div><button class="btn btn-add" type="button" id="add-item">＋ {{ label('Add item') }}</button>{{ field_error('items') }}</section>
+<section class="form-section"><div class="section-heading"><h2><span class="section-number">03</span>{{ label('The finishing touches') }}</h2></div><div class="form-row"><label>{{ label('Tax rate (%)') }}<input type="number" name="tax_rate" value="{{ form.tax_rate }}" step="any" min="0" max="100" required aria-describedby="error-tax_rate">{{ field_error('tax_rate') }}</label><label>{{ label('Invoice language') }}<select name="document_language"><option value="zh-CN" {% if form.document_language == 'zh-CN' %}selected{% endif %}>简体中文</option><option value="en" {% if form.document_language == 'en' %}selected{% endif %}>English</option></select></label></div><label>{{ label('Notes') }}<textarea name="notes" rows="3" placeholder="{{ t('A thank-you, a project detail, or something worth remembering.') }}" data-i18n-placeholder="A thank-you, a project detail, or something worth remembering.">{{ form.notes }}</textarea>{{ field_error('notes') }}</label><p class="form-hint">{{ label('Your studio and payment details come from Settings.') }} <a href="/settings">{{ label('Edit settings') }}</a></p></section>
+</div><aside class="preview-panel"><div class="preview-heading"><span>{{ label('Live preview') }}</span><span class="preview-state" id="preview-state" role="status">{{ label('Ready') }}</span></div><div id="invoice-preview" class="preview-paper"><div class="preview-placeholder">{{ label('Your invoice takes shape here.') }}</div></div><p class="preview-caption">{{ label('A clear, considered invoice. Ready to share.') }}</p></aside></div>
+<div class="editor-save-bar"><span class="save-state" data-save-state>{{ label('No unsaved changes') }}</span><div class="actions"><a href="{{ cancel_url }}" class="btn btn-ghost">{{ label('Cancel') }}</a><button type="submit" class="btn btn-primary">{{ label(submit_label) }}</button></div></div>
 </form>
-
-<script>
-(function () {
-  var SYMBOLS = {{ {"USD": "$", "EUR": "€", "GBP": "£", "CNY": "¥", "JPY": "¥"} | tojson }};
-  var form = document.getElementById('invoice-form');
-  var tbody = document.getElementById('items-body');
-  var currencySelect = document.getElementById('currency-select');
-  var taxInput = form.querySelector('input[name="tax_rate"]');
-
-  function symbol() {
-    return SYMBOLS[currencySelect.value] || (currencySelect.value + ' ');
-  }
-  function num(value) {
-    var n = parseFloat(value);
-    return isNaN(n) ? 0 : n;
-  }
-  function fmt(value) {
-    return symbol() + value.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  }
-  function recalc() {
-    var subtotal = 0;
-    tbody.querySelectorAll('tr').forEach(function (row) {
-      var q = num(row.querySelector('input[name="quantity"]').value);
-      var p = num(row.querySelector('input[name="unit_price"]').value);
-      var amount = q * p;
-      subtotal += amount;
-      row.querySelector('.row-amount').textContent = fmt(amount);
-    });
-    var rate = num(taxInput.value);
-    var tax = subtotal * rate / 100;
-    document.getElementById('sum-subtotal').textContent = fmt(subtotal);
-    document.getElementById('sum-tax-rate').textContent = String(rate);
-    document.getElementById('sum-tax').textContent = fmt(tax);
-    document.getElementById('sum-total').textContent = fmt(subtotal + tax);
-  }
-
-  document.getElementById('add-item').addEventListener('click', function () {
-    var row = tbody.rows[0].cloneNode(true);
-    row.querySelectorAll('input').forEach(function (input) {
-      input.value = input.name === 'quantity' ? '1' : '';
-    });
-    tbody.appendChild(row);
-    recalc();
-  });
-  tbody.addEventListener('click', function (e) {
-    if (!e.target.classList.contains('remove-row')) return;
-    if (tbody.rows.length > 1) {
-      e.target.closest('tr').remove();
-    } else {
-      e.target.closest('tr').querySelectorAll('input').forEach(function (input) { input.value = ''; });
-    }
-    recalc();
-  });
-  form.addEventListener('input', recalc);
-  currencySelect.addEventListener('change', recalc);
-  recalc();
-})();
-</script>
+<dialog id="client-dialog" class="dialog" aria-labelledby="client-dialog-title"><form method="post" action="/clients" id="inline-client-form"><div class="dialog-heading"><h2 id="client-dialog-title">{{ label('New client') }}</h2><button type="button" class="btn btn-ghost" data-close-dialog aria-label="{{ t('Close') }}" data-i18n-aria="Close">×</button></div><p class="muted">{{ label('Add a client without leaving your invoice.') }}</p><div class="alert-error" data-dialog-error role="alert" hidden></div><label>{{ label('Name') }}<input name="name" required autocomplete="name" autofocus></label><label>{{ label('Company') }}<input name="company" autocomplete="organization"></label><label>{{ label('Email') }}<input type="email" name="email" autocomplete="email"></label><label>{{ label('Address') }}<textarea name="address" rows="2" autocomplete="street-address"></textarea></label><div class="dialog-actions"><button class="btn btn-ghost" type="button" data-close-dialog>{{ label('Cancel') }}</button><button class="btn btn-primary" type="submit">{{ label('Add client') }}</button></div></form></dialog>

@@ -1,26 +1,2 @@
-{% if error %}<p class="alert-error">{{ error }}</p>{% endif %}
-<form method="post" action="{{ action }}">
-  <div class="form-row">
-    <label>Name *
-      <input type="text" name="name" required value="{{ client.name if client else '' }}">
-    </label>
-    <label>Company
-      <input type="text" name="company" value="{{ client.company if client else '' }}">
-    </label>
-  </div>
-  <div class="form-row">
-    <label>Email
-      <input type="email" name="email" value="{{ client.email if client else '' }}">
-    </label>
-    <label>Address
-      <input type="text" name="address" value="{{ client.address if client else '' }}">
-    </label>
-  </div>
-  <label>Notes
-    <textarea name="notes">{{ client.notes if client else '' }}</textarea>
-  </label>
-  <div class="actions">
-    <button type="submit" class="btn btn-primary">{{ submit_label }}</button>
-    <a href="/clients" class="btn btn-ghost">Cancel</a>
-  </div>
-</form>
+{% from '_macros.html' import label with context %}{% if error %}<div class="alert-error" role="alert" tabindex="-1">{{ t(error) }}</div>{% endif %}
+{% set values = form if form is defined else client %}<form method="post" action="{{ action }}" data-dirty-form class="client-form"><div class="form-row"><label>{{ label('Name') }} <span aria-hidden="true">*</span><input name="name" required value="{{ values.name if values else '' }}" autocomplete="name">{% if errors and errors.name %}<span class="field-error">{{ t(errors.name) }}</span>{% endif %}</label><label>{{ label('Company') }}<input name="company" value="{{ values.company if values else '' }}" autocomplete="organization"></label></div><div class="form-row"><label>{{ label('Email') }}<input type="email" name="email" value="{{ values.email if values else '' }}" autocomplete="email">{% if errors and errors.email %}<span class="field-error">{{ t(errors.email) }}</span>{% endif %}</label><label>{{ label('Address') }}<textarea name="address" rows="3" autocomplete="street-address">{{ values.address if values else '' }}</textarea></label></div><label>{{ label('Notes') }}<textarea name="notes" rows="4">{{ values.notes if values else '' }}</textarea></label><div class="form-footer"><span class="muted">{{ label('Only visible in your workspace') }}</span><div class="actions"><a class="btn btn-ghost" href="{{ '/clients/' ~ client.id if client else '/clients' }}">{{ label('Cancel') }}</a><button type="submit" class="btn btn-primary">{{ label(submit_label) }}</button></div></div></form>

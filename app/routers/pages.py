@@ -17,6 +17,8 @@ def landing(request: Request, user: CurrentUser):
 
 @router.get("/pricing")
 def pricing(request: Request, user: CurrentUser):
+    if not settings.billing_enabled:
+        return RedirectResponse("/dashboard" if user else "/", 303)
     return render(
         request,
         "pricing.html",

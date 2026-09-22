@@ -36,13 +36,29 @@ def signup(
 ):
     email = email.strip().lower()
     error = None
-    if len(password) < 8:
+    if "@" not in email or " " in email:
+        error = "Enter a valid email address."
+    elif len(password) < 8:
         error = "Password must be at least 8 characters."
     elif session.exec(select(User).where(User.email == email)).first():
         error = "This email is already registered."
     if error:
-        return render(request, "auth/signup.html", {"error": error}, status_code=400)
-    user = User(email=email, name=name.strip(), hashed_password=hash_password(password))
+        return render(
+            request,
+            "auth/signup.html",
+            {"error": error, "form": {"email": email, "name": name}},
+            status_code=400,
+        )
+    language = request.session.get("language", "zh-CN")
+    user = User(
+        email=email,
+        name=name.strip(),
+        hashed_password=hash_password(password),
+        language=language,
+        document_language=language,
+        issuer_name=name.strip(),
+        issuer_email=email,
+    )
     session.add(user)
     session.commit()
     session.refresh(user)
@@ -71,7 +87,7 @@ def login(
         return render(
             request,
             "auth/login.html",
-            {"error": "Invalid email or password."},
+            {"error": "Invalid email or password.", "form": {"email": email}},
             status_code=400,
         )
     login_user(request, user)

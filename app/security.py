@@ -22,10 +22,13 @@ def verify_password(password: str, hashed: str) -> bool:
 
 def login_user(request: Request, user: User) -> None:
     request.session[SESSION_KEY] = user.id
+    request.session["language"] = user.language
 
 
 def logout_user(request: Request) -> None:
+    language = request.session.get("language", "zh-CN")
     request.session.clear()
+    request.session["language"] = language
 
 
 def get_current_user(request: Request, session: SessionDep) -> User | None:

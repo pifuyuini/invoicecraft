@@ -1,59 +1,6 @@
-{% extends "base.html" %}
-{% block title %}Invoices — {{ app_name }}{% endblock %}
-{% block content %}
-<div class="header-row fade-up">
-  <h1>Invoices</h1>
-  <a href="/invoices/new" class="btn btn-primary">New invoice</a>
-</div>
-
-<div class="tabs fade-up" style="--d:.03s">
-  <a href="/invoices" class="tab {% if active_status == 'all' %}active{% endif %}">All ({{ counts.all }})</a>
-  <a href="/invoices?status=draft" class="tab {% if active_status == 'draft' %}active{% endif %}">Draft ({{ counts.draft }})</a>
-  <a href="/invoices?status=sent" class="tab {% if active_status == 'sent' %}active{% endif %}">Sent ({{ counts.sent }})</a>
-  <a href="/invoices?status=paid" class="tab {% if active_status == 'paid' %}active{% endif %}">Paid ({{ counts.paid }})</a>
-</div>
-
-<div class="card fade-up" style="--d:.05s">
-  {% if rows %}
-  <table class="table table-hover">
-    <thead>
-      <tr>
-        <th>Number</th>
-        <th>Client</th>
-        <th>Issued</th>
-        <th>Status</th>
-        <th>Total</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for row in rows %}
-      <tr>
-        <td><a href="/invoices/{{ row.invoice.id }}">{{ row.invoice.number }}</a></td>
-        <td>{{ clients[row.invoice.client_id].name if row.invoice.client_id in clients else "—" }}</td>
-        <td>{{ row.invoice.issue_date }}</td>
-        <td><span class="pill pill-{{ row.invoice.status }}">{{ row.invoice.status }}</span></td>
-        <td>{{ row.totals.total|money(row.invoice.currency) }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  {% else %}
-  {% if active_status != 'all' %}
-  <div class="empty-state">
-    <p class="muted">No {{ active_status }} invoices.</p>
-  </div>
-  {% else %}
-  <div class="empty-state">
-    <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-      <polyline points="14 2 14 8 20 8"></polyline>
-      <line x1="9" y1="13" x2="15" y2="13"></line>
-      <line x1="9" y1="17" x2="13" y2="17"></line>
-    </svg>
-    <p>No invoices yet — create your first one in under a minute.</p>
-    <a href="/invoices/new" class="btn btn-primary">Create invoice</a>
-  </div>
-  {% endif %}
-  {% endif %}
-</div>
-{% endblock %}
+{% extends 'base.html' %}{% from '_macros.html' import label,invoices_table,empty,pagination with context %}
+{% block title %}{{ t('Invoices') }} — InvoiceCraft{% endblock %}{% block breadcrumb %}{{ label('Invoices') }}{% endblock %}{% block content %}
+<div class="page-heading"><div><p class="eyebrow">{{ label('From first draft to paid') }}</p><h1>{{ label('Invoices') }}</h1><p class="page-description">{{ label('Every project, neatly accounted for.') }}</p></div><a href="/invoices/new" class="btn btn-primary">＋ {{ label('New invoice') }}</a></div>
+<div class="tabs">{% for key,title in [('all','All invoices'),('draft','Draft'),('sent','Sent'),('overdue','Overdue'),('paid','Paid')] %}<a class="tab {% if filters.status == key or (key == 'all' and not filters.status) %}active{% endif %}" href="{{ request.url.include_query_params(status=key,page=1) }}">{{ label(title) }}{% if counts and key in counts %}<span>{{ counts[key] }}</span>{% endif %}</a>{% endfor %}</div>
+<form action="/invoices" method="get" class="filter-bar"><input name="status" type="hidden" value="{{ filters.status or 'all' }}"><label class="search-field"><span class="sr-only">{{ label('Search invoices') }}</span><input type="search" name="q" value="{{ filters.q }}" placeholder="{{ t('Search number or client') }}" data-i18n-placeholder="Search number or client"></label><label><span class="sr-only">{{ label('Currency') }}</span><select name="currency"><option value="" data-i18n="All currencies">{{ t('All currencies') }}</option>{% for currency in currencies %}<option {% if filters.currency == currency %}selected{% endif %}>{{ currency }}</option>{% endfor %}</select></label><label><span class="sr-only">{{ label('Client') }}</span><select name="client_id"><option value="" data-i18n="All clients">{{ t('All clients') }}</option>{% for client in clients.values() %}<option value="{{ client.id }}" {% if filters.client_id|string == client.id|string %}selected{% endif %}>{{ client.name }}</option>{% endfor %}</select></label><label><span class="sr-only">{{ label('Sort') }}</span><select name="sort">{% for key,title in [('newest','Newest first'),('oldest','Oldest first'),('due','Due date')] %}<option value="{{ key }}" {% if filters.sort == key %}selected{% endif %} data-i18n="{{ title }}">{{ t(title) }}</option>{% endfor %}</select></label><button class="btn btn-secondary" type="submit">{{ label('Apply') }}</button><a class="text-button" href="/invoices">{{ label('Reset') }}</a></form>
+<div class="list-panel">{% if rows %}{{ invoices_table(rows,request.url.path ~ ('?' ~ request.url.query if request.url.query else '')) }}{{ pagination(page,pages,total) }}{% elif filters.q or filters.currency or filters.status not in ['', 'all'] %}{{ empty('No matches just yet.','Try another search or clear the filters.','/invoices','Clear filters') }}{% else %}{{ empty('A fresh page for your business.','Create an invoice and keep every detail in one place.','/invoices/new','Create invoice') }}{% endif %}</div>{% endblock %}

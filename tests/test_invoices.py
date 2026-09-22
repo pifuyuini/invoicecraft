@@ -88,7 +88,9 @@ def test_invoice_ownership_enforced(client):
 
 def test_free_limit_blocks_creation(client, monkeypatch):
     monkeypatch.setattr(settings, "free_invoice_limit", 1)
+    monkeypatch.setattr(settings, "billing_enabled", True)
     signup(client)
+    make_client(client)
     assert make_invoice(client).status_code == 303
     resp = make_invoice(client)
     assert resp.status_code == 303

@@ -1,13 +1,1 @@
-{% extends "base.html" %}
-{% block title %}New invoice — {{ app_name }}{% endblock %}
-{% block content %}
-<h1 class="page-title fade-up">New invoice</h1>
-<div class="fade-up" style="--d:.05s">
-  {% set action = "/invoices" %}
-  {% set invoice = None %}
-  {% set items = None %}
-  {% set submit_label = "Create invoice" %}
-  {% set cancel_url = "/invoices" %}
-  {% include "invoices/_form.html" %}
-</div>
-{% endblock %}
+{% extends 'base.html' %}{% from '_macros.html' import label with context %}{% block title %}{{ t('New invoice') }} — InvoiceCraft{% endblock %}{% block breadcrumb %}<a href="{{ return_to or '/invoices' }}">{{ label('Invoices') }}</a><span class="trail-separator">/</span>{{ label('New invoice') }}{% endblock %}{% block content %}<div class="page-heading editor-heading"><div><p class="eyebrow">{{ label('Made for your good work') }}</p><h1>{{ label('New invoice') }}</h1></div><span class="muted">{{ label('Saved only when you choose') }}</span></div>{% set action='/invoices' %}{% set submit_label='Create invoice' %}{% set cancel_url=return_to or '/invoices' %}{% include 'invoices/_form.html' %}{% endblock %}

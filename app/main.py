@@ -8,7 +8,7 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from .config import settings
 from .db import init_db
-from .routers import auth, billing, clients, invoices, pages
+from .routers import auth, billing, clients, invoices, pages, preferences
 from .templating import render
 
 
@@ -22,6 +22,7 @@ app = FastAPI(title=settings.app_name, lifespan=lifespan)
 app.add_middleware(
     SessionMiddleware,
     secret_key=settings.secret_key,
+    session_cookie=settings.session_cookie,
     https_only=False,
     same_site="lax",
 )
@@ -67,3 +68,4 @@ app.include_router(auth.router)
 app.include_router(invoices.router)
 app.include_router(clients.router)
 app.include_router(billing.router)
+app.include_router(preferences.router)

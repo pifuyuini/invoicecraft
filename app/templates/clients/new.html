@@ -1,11 +1,1 @@
-{% extends "base.html" %}
-{% block title %}New client — {{ app_name }}{% endblock %}
-{% block content %}
-<h1 class="page-title fade-up">New client</h1>
-<div class="card fade-up" style="--d:.05s">
-  {% set action = "/clients" %}
-  {% set client = None %}
-  {% set submit_label = "Create client" %}
-  {% include "clients/_form.html" %}
-</div>
-{% endblock %}
+{% extends 'base.html' %}{% from '_macros.html' import label with context %}{% block title %}{{ t('New client') }} — InvoiceCraft{% endblock %}{% block breadcrumb %}<a href="/clients">{{ label('Clients') }}</a><span class="trail-separator">/</span>{{ label('New client') }}{% endblock %}{% block content %}<div class="page-heading"><div><p class="eyebrow">{{ label('The start of something good') }}</p><h1>{{ label('New client') }}</h1></div></div><div class="form-card">{% set action='/clients' %}{% set submit_label='Add client' %}{% include 'clients/_form.html' %}</div>{% endblock %}

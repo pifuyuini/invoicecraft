@@ -1,17 +1,1 @@
-{% extends "base.html" %}
-{% block title %}Edit {{ client.name }} — {{ app_name }}{% endblock %}
-{% block content %}
-<h1 class="page-title fade-up">Edit {{ client.name }}</h1>
-<div class="card fade-up" style="--d:.05s">
-  {% set action = "/clients/" ~ client.id ~ "/edit" %}
-  {% set submit_label = "Save changes" %}
-  {% include "clients/_form.html" %}
-</div>
-<div class="card fade-up" style="--d:.1s">
-  <h3>Delete client</h3>
-  <p class="muted">Clients with invoices cannot be deleted.</p>
-  <form method="post" action="/clients/{{ client.id }}/delete" class="inline-form" onsubmit="return confirm('Delete this client? This cannot be undone.');">
-    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-  </form>
-</div>
-{% endblock %}
+{% extends 'base.html' %}{% from '_macros.html' import label with context %}{% block title %}{{ t('Edit client') }} — InvoiceCraft{% endblock %}{% block breadcrumb %}<a href="/clients">{{ label('Clients') }}</a><span class="trail-separator">/</span>{{ client.name }}{% endblock %}{% block content %}<div class="page-heading"><div><p class="eyebrow">{{ client.name }}</p><h1>{{ label('Edit client') }}</h1></div></div><div class="form-card">{% set action='/clients/' ~ client.id ~ '/edit' %}{% set submit_label='Save changes' %}{% include 'clients/_form.html' %}</div><details class="danger-zone"><summary>{{ label('Delete client') }}</summary><p class="muted">{{ label('Clients with invoices cannot be deleted.') }}</p><form method="post" action="/clients/{{ client.id }}/delete" data-confirm="{{ client.name }}"><button class="btn btn-danger" type="submit">{{ label('Delete client') }}</button></form></details>{% endblock %}

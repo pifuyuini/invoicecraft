@@ -6,13 +6,15 @@ from ..config import settings
 from ..db import SessionDep
 from ..security import RequiredUser
 from ..services import billing as billing_service
-from ..templating import templates
+from ..templating import render
 
 router = APIRouter(tags=["billing"])
 
 
 @router.post("/billing/checkout")
 def checkout(session: SessionDep, user: RequiredUser):
+    if not settings.billing_enabled:
+        return RedirectResponse("/dashboard", 303)
     if not billing_service.is_configured():
         return RedirectResponse("/pricing?unavailable=1", 303)
     try:
@@ -24,6 +26,8 @@ def checkout(session: SessionDep, user: RequiredUser):
 
 @router.post("/billing/portal")
 def portal(user: RequiredUser):
+    if not settings.billing_enabled:
+        return RedirectResponse("/dashboard", 303)
     if not billing_service.is_configured() or not user.stripe_customer_id:
         return RedirectResponse("/pricing", 303)
     try:
@@ -35,7 +39,7 @@ def portal(user: RequiredUser):
 
 @router.get("/billing/success")
 def success(request: Request, user: RequiredUser):
-    return templates.TemplateResponse(request, "billing/success.html", {"user": user})
+    return render(request, "billing/success.html", {"user": user})
 
 
 @router.post("/billing/webhook")

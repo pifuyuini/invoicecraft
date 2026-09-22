@@ -1,10 +1,1 @@
-{% extends "base.html" %}
-{% block title %}Something went wrong — {{ app_name }}{% endblock %}
-{% block content %}
-<div class="card error-card fade-up">
-  <p class="error-code">500</p>
-  <h1>Something went wrong</h1>
-  <p class="muted">That's on us — an unexpected error occurred. Please try again in a moment.</p>
-  <p><a href="/" class="btn btn-primary">Back to home</a></p>
-</div>
-{% endblock %}
+{% extends 'base.html' %}{% from '_macros.html' import label with context %}{% block title %}500 — InvoiceCraft{% endblock %}{% block content %}<section class="message-page"><p class="eyebrow">500</p><h1>{{ label('A small interruption.') }}</h1><p class="muted">{{ label('Something went wrong. Please try again in a moment.') }}</p><a class="btn btn-primary" href="{{ '/dashboard' if user else '/' }}">{{ label('Back home') }}</a></section>{% endblock %}

@@ -18,6 +18,7 @@ def client():
     SQLModel.metadata.drop_all(engine)
     SQLModel.metadata.create_all(engine)
     with TestClient(app) as c:
+        c.post("/language", json={"language": "en"})
         yield c
 
 
