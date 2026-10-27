@@ -48,6 +48,9 @@
   const clock = () => {
     const now = new Date();
     const time = [now.getHours(), now.getMinutes(), now.getSeconds()].map((value) => String(value).padStart(2, '0')).join(':');
+    const date = [now.getFullYear(), String(now.getMonth() + 1).padStart(2, '0'), String(now.getDate()).padStart(2, '0')].join('-');
+    const weekday = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'][now.getDay()];
+    document.querySelectorAll('[data-console-date]').forEach((el) => { el.textContent = `${date} ${weekday}`; });
     document.querySelectorAll('[data-console-clock]').forEach((el) => { el.textContent = time; });
   };
   clock();

@@ -16,8 +16,8 @@
 {% endblock %}
 {% block content %}
 <div class="page-heading dashboard-heading">
-  <div><p class="eyebrow">SYSTEM OVERVIEW / CH. 01</p><h1>{{ label('Financial console') }}</h1><p class="page-description">{{ label('Invoices, clients, and receivables. Under control.') }}</p></div>
-  <a class="btn btn-primary new-invoice-key" href="/invoices/new"><span class="key-code">REC ＋</span>{{ label('New invoice') }}</a>
+  <div><h1>{{ label('Financial console') }}</h1><p class="page-description">{{ label('Invoices, clients, and receivables. Under control.') }}</p></div>
+  <a class="btn btn-primary new-invoice-key dashboard-create" href="/invoices/new"><span class="key-code">REC ＋</span>{{ label('New invoice') }}</a>
 </div>
 <div class="dashboard-console">
   <div class="dashboard-main">
@@ -31,8 +31,8 @@
       <div class="summary-foot"><span>INV. COUNT <b>{{ '%03d' % stats.invoice_count }}</b></span><a href="/invoices?status=draft">{{ label('Drafts') }} <b>{{ '%02d' % stats.draft_count }}</b><span class="status-dot" aria-hidden="true"></span></a></div>
     </section>
     <section class="section-main ledger-monitor module-monitor">
-      <div class="module-bar"><h2><span class="module-index">02</span>LOG / {{ label('Recent invoices') }}</h2><a href="/invoices" class="quiet-link">{{ label('View all') }} <span aria-hidden="true">↗</span></a></div>
-      {% if recent %}{{ invoices_table(recent,'/dashboard') }}{% else %}{{ empty('Awaiting first record.','Create an invoice to initialize your ledger.','/invoices/new','Create invoice') }}{% endif %}
+      <div class="module-bar"><h2><span class="module-index">02</span>LOG / {{ label('Recent invoices') }}</h2><a href="/invoices" class="quiet-link">{{ label('View all') }} </a></div>
+      {% if recent %}{{ invoices_table(recent[:3],'/dashboard') }}{% else %}{{ empty('Awaiting first record.','Create an invoice to initialize your ledger.','/invoices/new','Create invoice') }}{% endif %}
       <div class="terminal-line"><span class="terminal-cursor" aria-hidden="true"></span><span>{{ label('Ledger records loaded') }}</span><span class="terminal-record-count">{{ '%03d' % stats.invoice_count }} REC</span></div>
     </section>
   </div>
