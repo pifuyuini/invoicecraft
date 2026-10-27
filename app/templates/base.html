@@ -1,42 +1,70 @@
 {% set workspace = user and not public_page|default(false) %}
 <!DOCTYPE html>
-<html lang="{{ lang|default('zh-CN') }}">
+<html lang="{{ lang|default('zh-CN') }}" data-console-effects="on" data-console-phosphor="green">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{% block title %}{{ app_name }}{% endblock %}</title>
-<meta name="theme-color" content="#FAF8F4"><meta name="description" content="InvoiceCraft — a considered workspace for independent work.">
-<link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/static/style.css"><link rel="stylesheet" href="/static/pages.css">
-<script id="ui-strings" type="application/json">{{ ui_strings|default({})|tojson }}</script>
-<script src="/static/app.js" defer></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ app_name }}{% endblock %}</title>
+  <meta name="theme-color" content="#252925">
+  <meta name="description" content="InvoiceCraft — independent work, under control.">
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/pages.css">
+  <script id="ui-strings" type="application/json">{{ ui_strings|default({})|tojson }}</script>
+  <script src="/static/cassette.js" defer></script>
+  <script src="/static/app.js" defer></script>
 </head>
 <body class="{% if workspace %}workspace{% else %}public-site{% endif %}">
 <a class="skip-link" href="#main-content" data-i18n="Skip to content">{{ t('Skip to content') }}</a>
+<div class="console-nameplate" aria-label="InvoiceCraft">
+  <a href="{{ '/dashboard' if workspace else '/' }}" class="console-wordmark">INVOICE<span>CRAFT</span></a>
+  <span class="console-model">IC–80 <span class="nameplate-divider">/</span> ACCOUNTING TERMINAL</span>
+  <div class="console-stripes" aria-hidden="true"><i></i><i></i><i></i></div>
+  <span class="console-serial">SER. 084–128</span>
+</div>
 {% if workspace %}
-<aside class="sidebar" id="sidebar">
-<a href="/dashboard" class="brand"><span class="brand-monogram">ic</span><span>InvoiceCraft<small data-i18n="Your independent studio">{{ t('Your independent studio') }}</small></span></a>
-<div class="sidebar-section" data-i18n="Workspace">{{ t('Workspace') }}</div>
-<nav class="workspace-nav" aria-label="{{ t('Workspace') }}" data-i18n-aria="Workspace">
-{% for path,label,mark in [('/dashboard','Overview','01'),('/invoices','Invoices','02'),('/clients','Clients','03'),('/settings','Settings','04')] %}
-<a href="{{ path }}" {% if request.url.path.startswith(path) %}class="active" aria-current="page"{% endif %}><span class="nav-number" aria-hidden="true">{{ mark }}</span><span data-i18n="{{ label }}">{{ t(label) }}</span></a>
-{% endfor %}
-</nav>
-<div class="sidebar-note"><div class="tiny-line"></div><p data-i18n="Good work deserves a good invoice.">{{ t('Good work deserves a good invoice.') }}</p></div>
-<div class="account"><span class="avatar">{{ (user.name or user.email)[:1]|upper }}</span><div class="account-info"><strong>{{ user.name or user.email }}</strong><small data-i18n="Personal workspace">{{ t('Personal workspace') }}</small></div><form action="/logout" method="post"><button class="text-button account-logout" type="submit" data-i18n="Log out">{{ t('Log out') }}</button></form></div>
+<aside class="sidebar hardware-panel" id="sidebar">
+  <div class="panel-screws" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+  <div class="module-heading"><span class="embossed-label">NAV</span><span class="module-code">MODULE 01</span></div>
+  <div class="sidebar-section" data-i18n="Navigation">{{ t('Navigation') }}</div>
+  <nav class="workspace-nav" aria-label="{{ t('Workspace') }}" data-i18n-aria="Workspace">
+    {% for path,label,mark,channel in [('/dashboard','Overview','01','SYS'),('/invoices','Invoices','02','INV'),('/clients','Clients','03','ADR'),('/settings','Settings','04','CFG')] %}
+    <a href="{{ path }}" {% if request.url.path.startswith(path) %}class="active" aria-current="page"{% endif %}>
+      <span class="nav-number" aria-hidden="true">{{ mark }}</span>
+      <span class="nav-label"><b>{{ channel }}</b><span data-i18n="{{ label }}">{{ t(label) }}</span></span>
+      <span class="nav-light" aria-hidden="true"></span>
+    </a>
+    {% endfor %}
+  </nav>
+
+  <div class="sidebar-vent" aria-hidden="true"></div>
+  <div class="account"><span class="avatar">{{ (user.name or user.email)[:1]|upper }}</span><div class="account-info"><strong>{{ user.name or user.email }}</strong><small data-i18n="Personal workspace">{{ t('Personal workspace') }}</small></div><form action="/logout" method="post"><button class="text-button account-logout" type="submit" data-i18n="Log out">{{ t('Log out') }}</button></form></div>
 </aside>
 <button type="button" class="sidebar-backdrop" data-close-nav aria-label="{{ t('Close menu') }}" data-i18n-aria="Close menu" hidden></button>
 {% endif %}
 <div class="app-main">
-<header class="{% if workspace %}toolbar{% else %}site-header{% endif %}">
-{% if workspace %}
-<div class="toolbar-trail"><button type="button" class="btn btn-ghost mobile-menu" data-nav-toggle aria-controls="sidebar" aria-expanded="false" data-i18n="Menu">{{ t('Menu') }}</button><span class="toolbar-studio" data-i18n="Studio">{{ t('Studio') }}</span><span class="trail-separator">/</span><span>{% block breadcrumb %}InvoiceCraft{% endblock %}</span></div>
-{% else %}<a class="brand" href="/"><span class="brand-monogram">ic</span>InvoiceCraft</a>{% endif %}
-<div class="toolbar-right">
-<label class="language-control"><span class="sr-only" data-i18n="Language">{{ t('Language') }}</span><select data-language-select aria-label="{{ t('Language') }}" data-i18n-aria="Language"><option value="zh-CN" {% if lang == 'zh-CN' %}selected{% endif %}>简体中文</option><option value="en" {% if lang == 'en' %}selected{% endif %}>English</option></select></label>
-{% if not workspace and not public_page|default(false) %}<a href="/login" class="text-button" data-i18n="Log in">{{ t('Log in') }}</a><a href="/signup" class="btn btn-primary btn-sm" data-i18n="Get started">{{ t('Get started') }}</a>{% endif %}
-</div></header>
-<main id="main-content" class="{% if workspace %}workspace-content{% else %}site-content{% endif %}">{% block content %}{% endblock %}</main>
-{% if not workspace and not public_page|default(false) %}<footer class="site-footer"><span>© InvoiceCraft</span><nav><a href="/terms" data-i18n="Terms">{{ t('Terms') }}</a><a href="/privacy" data-i18n="Privacy">{{ t('Privacy') }}</a></nav></footer>{% endif %}
+  <header class="{% if workspace %}toolbar{% else %}site-header{% endif %}">
+    {% if workspace %}
+    <div class="toolbar-trail"><button type="button" class="btn btn-ghost mobile-menu" data-nav-toggle aria-controls="sidebar" aria-expanded="false" data-i18n="Menu">{{ t('Menu') }}</button><span class="embossed-label route-label">CH.</span><span>{% block breadcrumb %}InvoiceCraft{% endblock %}</span></div>
+    {% else %}<span class="embossed-label">ACCESS TERMINAL</span>{% endif %}
+    <div class="toolbar-right"><span class="timecode" aria-label="{{ t('Local time') }}"><span class="indicator-light" aria-hidden="true"></span><span data-console-clock>--:--:--</span></span><label class="language-control"><span class="sr-only" data-i18n="Language">{{ t('Language') }}</span><select data-language-select aria-label="{{ t('Language') }}" data-i18n-aria="Language"><option value="zh-CN" {% if lang == 'zh-CN' %}selected{% endif %}>中文 / ZH</option><option value="en" {% if lang == 'en' %}selected{% endif %}>ENGLISH</option></select></label>{% if not workspace and not public_page|default(false) %}<a href="/login" class="btn btn-secondary btn-sm" data-i18n="Log in">{{ t('Log in') }}</a><a href="/signup" class="btn btn-primary btn-sm" data-i18n="Get started">{{ t('Get started') }}</a>{% endif %}</div>
+  </header>
+  {% if workspace %}<details class="console-control-rack" open data-console-rack><summary class="embossed-label">PWR / <span data-i18n="Display controls">{{ t('Display controls') }}</span></summary>
+  <section class="display-controls" aria-label="{{ t('Display controls') }}" data-i18n-aria="Display controls">
+    <div class="module-heading"><span class="embossed-label">PWR / CRT</span><span class="module-code">02</span></div>
+    <div class="display-control-row"><label class="toggle-label"><span data-i18n="CRT effects">{{ t('CRT effects') }}</span><span class="physical-toggle"><input type="checkbox" data-console-effects checked><span class="toggle-lever" aria-hidden="true"></span></span></label></div>
+    <div class="display-luminance"><div><span class="control-code">LUMA</span><label for="console-brightness" data-i18n="Display brightness">{{ t('Display brightness') }}</label><output data-console-brightness-value for="console-brightness">100</output><span class="control-unit">%</span></div><div class="rotary-control"><span class="knob-scale" aria-hidden="true">− &nbsp; ＋</span><span class="knob-face" aria-hidden="true"></span><input id="console-brightness" type="range" min="45" max="100" value="100" step="1" data-console-brightness aria-label="{{ t('Display brightness') }}" data-i18n-aria="Display brightness"></div></div>
+    <div class="phosphor-label"><span class="control-code">PHOSPHOR</span><span data-i18n="Screen color">{{ t('Screen color') }}</span></div>
+    <div class="phosphor-keys" role="group" aria-label="{{ t('Screen color') }}" data-i18n-aria="Screen color"><button type="button" data-console-phosphor="green" aria-pressed="true">P1 <span data-i18n="Green">{{ t('Green') }}</span><i class="phosphor-swatch green" aria-hidden="true"></i></button><button type="button" data-console-phosphor="amber" aria-pressed="false">P3 <span data-i18n="Amber">{{ t('Amber') }}</span><i class="phosphor-swatch amber" aria-hidden="true"></i></button></div>
+  </section>
+{% block auxiliary %}{% endblock %}<div class="rack-foot"><div class="rack-vents" aria-hidden="true"></div><span>IC–80 / DISPLAY UNIT</span></div></details>{% endif %}
+  <main id="main-content" class="{% if workspace %}workspace-content{% else %}site-content{% endif %}">
+    {% if workspace %}<div class="screen-ident"><span class="embossed-label">FINANCIAL OPERATIONS</span><span class="screen-ident-right"><span class="indicator-light" aria-hidden="true"></span> ONLINE <span class="ident-slot">80 / 24</span></span></div>{% endif %}
+    <div class="{% if workspace %}workspace-screen crt-surface{% else %}site-screen{% endif %}">{% if workspace %}<div class="screen-status-line"><span data-console-boot data-console-text="INVOICECRAFT OS / WORKSPACE READY">INVOICECRAFT OS / WORKSPACE READY</span><span class="screen-status-code">SYS: READY</span></div>{% endif %}{% block content %}{% endblock %}</div>
+    {% if workspace %}<div class="console-bottom-rail"><span>IC–80 / ACCOUNTING SYSTEM</span><span><i class="indicator-light" aria-hidden="true"></i> <span data-i18n="Manual status tracking">{{ t('Manual status tracking') }}</span></span><span>LOCAL SESSION</span></div>{% endif %}
+  </main>
+  {% if not workspace and not public_page|default(false) %}<footer class="site-footer"><span>© INVOICECRAFT / IC–80</span><nav><a href="/terms" data-i18n="Terms">{{ t('Terms') }}</a><a href="/privacy" data-i18n="Privacy">{{ t('Privacy') }}</a></nav></footer>{% endif %}
 </div>
 <div class="toasts" id="toasts" aria-live="polite">{% for kind,msg in flashes or [] %}<div class="toast toast-{{ kind }}" role="status">{{ t(msg) }}</div>{% endfor %}</div>
-</body></html>
+</body>
+</html>

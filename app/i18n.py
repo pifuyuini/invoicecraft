@@ -354,6 +354,30 @@ ZH.update({"Unsaved changes": "有未保存的更改", "Payment terms": "付款�
 ZH.update({"Privacy Policy": "隐私政策", "Terms of Service": "服务条款"})
 
 
+ZH.update(
+    {
+        "Navigation": "导航",
+        "Display controls": "显示控制",
+        "CRT effects": "显像管效果",
+        "Display brightness": "屏幕亮度",
+        "Screen color": "荧光颜色",
+        "Green": "荧光绿",
+        "Amber": "琥珀色",
+        "Local time": "本地时间",
+        "Manual status tracking": "手动跟进账单状态",
+        "Financial console": "账单控制台",
+        "Invoices, clients, and receivables. Under control.": "账单、客户与收款，集中掌握。",
+        "Account readings": "账户读数",
+        "Workload": "账单计数",
+        "Counts reflect saved invoices": "按已保存账单数量统计",
+        "Awaiting first record.": "等待第一条记录。",
+        "Create an invoice to initialize your ledger.": "创建第一份账单，开始记录项目与收款。",
+        "Ledger records loaded": "账单记录已载入",
+        "No pending operations.": "暂无待处理事项。",
+    }
+)
+
+
 def translate(text, lang="zh-CN"):
     return ZH.get(str(text), str(text)) if lang == "zh-CN" else str(text)
 

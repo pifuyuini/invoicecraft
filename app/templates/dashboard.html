@@ -1,11 +1,48 @@
-{% extends 'base.html' %}{% from '_macros.html' import label,invoices_table,empty with context %}
-{% block title %}{{ t('Overview') }} — InvoiceCraft{% endblock %}{% block breadcrumb %}{{ label('Overview') }}{% endblock %}
+{% extends 'base.html' %}
+{% from '_macros.html' import label,invoices_table,empty with context %}
+{% block title %}{{ t('Overview') }} — InvoiceCraft{% endblock %}
+{% block breadcrumb %}<span class="channel-abbreviation">SYS</span> / {{ label('Overview') }}{% endblock %}
+{% block auxiliary %}
+    <section class="workload-module hardware-panel">
+      <div class="panel-screws" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <div class="module-heading"><span class="embossed-label">SYS / COUNTERS</span><span class="module-code">03</span></div>
+      <h2>{{ label('Workload') }}</h2>
+      {% set total = stats.invoice_count or 1 %}
+      {% for count,title,code in [(stats.draft_count,'Drafts','DRF'),(stats.overdue_count,'Overdue','OVD')] %}
+      <div class="counter-readout"><div><span class="control-code">{{ code }}</span><span>{{ label(title) }}</span>{% if code == 'OVD' and count %}<i class="indicator-light alarm-light" aria-hidden="true"></i>{% endif %}<strong>{{ '%02d' % count }}<small>/{{ '%02d' % stats.invoice_count }}</small></strong></div><div class="segmented-meter {% if code == 'OVD' %}amber-meter{% endif %}" role="meter" aria-label="{{ t(title) }}" aria-valuemin="0" aria-valuemax="{{ stats.invoice_count or 1 }}" aria-valuenow="{{ count }}" aria-valuetext="{{ count }} / {{ stats.invoice_count }}">{% for cell in range(12) %}<span{% if cell < ((count / total) * 12)|round(0,'ceil') %} class="lit"{% endif %}></span>{% endfor %}</div></div>
+      {% endfor %}
+      <div class="counter-footer">{{ label('Counts reflect saved invoices') }}</div>
+    </section>
+{% endblock %}
 {% block content %}
-<div class="page-heading"><div><p class="eyebrow">{{ label('A little clarity for your work') }}</p><h1>{{ label('Your studio, at a glance.') }}</h1><p class="page-description">{{ label('A clear view of what is coming in and what needs a little attention.') }}</p></div><a class="btn btn-primary" href="/invoices/new"><span aria-hidden="true">＋</span>{{ label('New invoice') }}</a></div>
-<section class="overview-summary" aria-label="{{ t('Financial summary') }}">
-<div class="summary-heading"><h2>{{ label('The numbers') }}</h2><span class="muted">{{ label('Each currency, kept separate') }}</span></div>
-{% for summary in summaries %}<div class="summary-strip"><div class="currency-code">{{ summary.currency }}</div><div class="metric"><span>{{ label('Outstanding') }}</span><strong>{{ summary.outstanding|money(summary.currency) }}</strong></div><div class="metric"><span>{{ label('Overdue') }}</span><strong class="{% if summary.overdue %}overdue-text{% endif %}">{{ summary.overdue|money(summary.currency) }}</strong></div><div class="metric"><span>{{ label('Collected') }}</span><strong>{{ summary.paid|money(summary.currency) }}</strong></div></div>{% else %}<div class="summary-strip"><div class="currency-code">{{ prefs.default_currency }}</div>{% for title in ['Outstanding','Overdue','Collected'] %}<div class="metric"><span>{{ label(title) }}</span><strong>{{ 0|money(prefs.default_currency) }}</strong></div>{% endfor %}</div>{% endfor %}
-<div class="summary-foot"><span><b>{{ stats.invoice_count }}</b> {{ label('invoices in your studio') }}</span><a href="/invoices?status=draft"><b>{{ stats.draft_count }}</b> {{ label('drafts to finish') }} <span aria-hidden="true">↗</span></a></div></section>
-<div class="dashboard-columns"><section class="section-main"><div class="section-heading"><h2>{{ label('Recent invoices') }}</h2><a href="/invoices" class="quiet-link">{{ label('View all') }} <span aria-hidden="true">↗</span></a></div>{% if recent %}{{ invoices_table(recent,'/dashboard') }}{% else %}{{ empty('A fresh page for your business.','Your invoices will find a home here. Start with your first one.','/invoices/new','Create invoice') }}{% endif %}</section>
-<aside class="attention-panel"><p class="eyebrow">{{ label('On your desk') }}</p><h2>{{ label('A little attention') }}<span class="count-badge">{{ attention|length }}</span></h2>{% for row in attention %}<a class="attention-item" href="/invoices/{{ row.invoice.id }}?return_to=/dashboard"><span class="attention-caption">{{ label('Finish draft') if row.invoice.status == 'draft' else label('Follow up') }}</span><strong>{{ row.client.name if row.client else row.invoice.number }}</strong><span>{{ row.invoice.number }}<span class="attention-amount">{{ row.totals.total|money(row.invoice.currency) }}</span></span></a>{% else %}<p class="muted attention-empty">{{ label('All caught up. More room for the work you love.') }}</p>{% endfor %}<div class="studio-tip"><span class="tiny-line"></span><p>{{ label('Make it yours.') }}</p><span>{{ label('Add your studio details for invoices that feel like you.') }}</span><a class="quiet-link" href="/settings">{{ label('Studio settings') }} ↗</a></div></aside></div>
+<div class="page-heading dashboard-heading">
+  <div><p class="eyebrow">SYSTEM OVERVIEW / CH. 01</p><h1>{{ label('Financial console') }}</h1><p class="page-description">{{ label('Invoices, clients, and receivables. Under control.') }}</p></div>
+  <a class="btn btn-primary new-invoice-key" href="/invoices/new"><span class="key-code">REC ＋</span>{{ label('New invoice') }}</a>
+</div>
+<div class="dashboard-console">
+  <div class="dashboard-main">
+    <section class="overview-summary module-monitor" aria-label="{{ t('Financial summary') }}">
+      <div class="module-bar"><h2><span class="module-index">01</span>{{ label('Account readings') }}</h2><span class="module-note">{{ label('Each currency, kept separate') }}</span></div>
+      {% for summary in summaries %}
+      <div class="summary-strip"><div class="currency-code"><span class="currency-channel">CUR. {{ '%02d' % loop.index }}</span><strong>{{ summary.currency }}</strong></div><div class="metric"><span><b class="metric-code">RCV</b> {{ label('Outstanding') }}</span><strong>{{ summary.outstanding|money(summary.currency) }}</strong></div><div class="metric"><span><b class="metric-code">OVD</b> {{ label('Overdue') }}{% if summary.overdue %}<i class="indicator-light alarm-light" aria-hidden="true"></i>{% endif %}</span><strong class="{% if summary.overdue %}overdue-text{% endif %}">{{ summary.overdue|money(summary.currency) }}</strong></div><div class="metric"><span><b class="metric-code">PAID</b> {{ label('Collected') }}</span><strong>{{ summary.paid|money(summary.currency) }}</strong></div></div>
+      {% else %}
+      <div class="summary-strip"><div class="currency-code"><span class="currency-channel">CUR. 01</span><strong>{{ prefs.default_currency }}</strong></div>{% for title,code in [('Outstanding','RCV'),('Overdue','OVD'),('Collected','PAID')] %}<div class="metric"><span><b class="metric-code">{{ code }}</b>{{ label(title) }}</span><strong>{{ 0|money(prefs.default_currency) }}</strong></div>{% endfor %}</div>
+      {% endfor %}
+      <div class="summary-foot"><span>INV. COUNT <b>{{ '%03d' % stats.invoice_count }}</b></span><a href="/invoices?status=draft">{{ label('Drafts') }} <b>{{ '%02d' % stats.draft_count }}</b><span class="status-dot" aria-hidden="true"></span></a></div>
+    </section>
+    <section class="section-main ledger-monitor module-monitor">
+      <div class="module-bar"><h2><span class="module-index">02</span>LOG / {{ label('Recent invoices') }}</h2><a href="/invoices" class="quiet-link">{{ label('View all') }} <span aria-hidden="true">↗</span></a></div>
+      {% if recent %}{{ invoices_table(recent,'/dashboard') }}{% else %}{{ empty('Awaiting first record.','Create an invoice to initialize your ledger.','/invoices/new','Create invoice') }}{% endif %}
+      <div class="terminal-line"><span class="terminal-cursor" aria-hidden="true"></span><span>{{ label('Ledger records loaded') }}</span><span class="terminal-record-count">{{ '%03d' % stats.invoice_count }} REC</span></div>
+    </section>
+  </div>
+  <aside class="dashboard-rack">
+
+    <section class="attention-panel module-monitor">
+      <div class="module-bar"><h2><span class="module-index">04</span>{{ label('Needs attention') }}</h2><span class="count-badge">{{ '%02d' % (attention|length) }}</span></div>
+      {% for row in attention %}<a class="attention-item" href="/invoices/{{ row.invoice.id }}?return_to=/dashboard"><span class="attention-caption">{% if is_overdue(row.invoice) %}<i class="indicator-light alarm-light" aria-hidden="true"></i>{% endif %}{{ label('Finish draft') if row.invoice.status == 'draft' else label('Follow up') }}</span><strong>{{ row.client.name if row.client else row.invoice.number }}</strong><span>{{ row.invoice.number }}<span class="attention-amount">{{ row.totals.total|money(row.invoice.currency) }}</span></span></a>{% else %}<p class="muted attention-empty">{{ label('No pending operations.') }}</p>{% endfor %}
+    </section>
+
+  </aside>
+</div>
 {% endblock %}

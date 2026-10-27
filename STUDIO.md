@@ -1,6 +1,6 @@
 # InvoiceCraft Studio
 
-A warm, bilingual invoicing workspace for independent studios. This version remains a FastAPI/Jinja application; macOS packaging and offline operation are future work.
+A bilingual invoicing workspace for independent studios, presented as an IC–80 Cassette Futurism console. This version remains a FastAPI/Jinja application; macOS packaging and offline operation are future work.
 
 ## Run with the existing environment
 
