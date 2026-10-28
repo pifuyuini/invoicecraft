@@ -12,9 +12,14 @@
   <link rel="stylesheet" href="/static/pages.css?v=console-6">
   <script id="ui-strings" type="application/json">{{ ui_strings|default({})|tojson }}</script>
   <script src="/static/cassette.js?v=console-6" defer></script>
-  <script src="/static/app.js" defer></script>
+  {% if demo_mode|default(false) %}
+  <link rel="stylesheet" href="/static/demo.css">
+  <script id="demo-data" type="application/json">{{ demo_data|tojson }}</script>
+  <script src="/static/demo.js" defer></script>
+  {% else %}<script src="/static/app.js" defer></script>{% endif %}
 </head>
 <body class="{% if workspace %}workspace{% else %}public-site{% endif %}">
+
 <a class="skip-link" href="#main-content" data-i18n="Skip to content">{{ t('Skip to content') }}</a>
 <div class="console-nameplate" aria-label="InvoiceCraft">
   <a href="{{ '/dashboard' if workspace else '/' }}" class="console-wordmark">INV-CRAFT</a>
@@ -76,6 +81,13 @@
       {% if workspace %}
       <header class="toolbar"><div class="toolbar-trail"><button type="button" class="btn btn-ghost mobile-menu" data-nav-toggle aria-controls="sidebar" aria-expanded="false" data-i18n="Menu">{{ t('Menu') }}</button><span>{% block breadcrumb %}InvoiceCraft{% endblock %}</span></div><span class="screen-status-code" data-console-boot data-console-text="INVOICECRAFT v1.0.0">INVOICECRAFT v1.0.0</span></header>
       {% endif %}
+      {% if demo_mode|default(false) %}
+<section class="demo-banner" id="demo-banner" aria-label="Static demonstration">
+  <strong>DEMO / 静态演示</strong>
+  <p>纯合成样本，可试编辑与预览；刷新即还原。保存、客户写入、状态更新、登录、支付及 PDF 需运行完整应用。<br>
+  Synthetic samples. Try editing and previewing; refresh resets changes. Saving, client changes, status updates, sign-in, payments and PDF require the full app.</p>
+</section>
+{% endif %}
       {% block content %}{% endblock %}
     </div>
     {% if workspace %}<div class="console-bottom-rail"><span>IC–80 / ACCOUNTING SYSTEM</span><span><i class="indicator-light" aria-hidden="true"></i> <span data-i18n="Manual status tracking">{{ t('Manual status tracking') }}</span></span><span>LOCAL SESSION</span></div>{% endif %}
